@@ -1,0 +1,36 @@
+{
+    "name": "rodrigorioo/backstrap-laravel",
+    "description": "A Laravel integration for backstrap",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rodrigo Rio",
+            "email": "rodrigo.rio@outlook.com.ar"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": false,
+    "require": {
+        "php": ">=7.4.10",
+        "illuminate/support": ">=4.0",
+        "laravelcollective/html": "6.x-dev",
+        "yajra/laravel-datatables-oracle": "9.0.x-dev",
+        "spatie/laravel-permission": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rodrigorioo\\BackStrapLaravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rodrigorioo\\BackStrapLaravel\\BackStrapLaravelServiceProvider"
+            ],
+            "aliases": {
+                "BackStrapLaravel": "Rodrigorioo\\BackStrapLaravel\\Facades\\BackStrapLaravel"
+            }
+        }
+    }
+}
