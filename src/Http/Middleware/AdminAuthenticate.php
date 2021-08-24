@@ -26,7 +26,7 @@ class AdminAuthenticate
             }
         } else {
             if (Auth::guard($guard['name'])->check()) {
-                return Redirect::to(action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdminController@home'));
+                return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdminController@home');
             }
         }
 

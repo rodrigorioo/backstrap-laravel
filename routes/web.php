@@ -16,7 +16,9 @@ Route::group(['prefix' => $prefix, 'middleware' => ['web']], function() {
     Route::group(['middleware' => ['backstrap_laravel_admin_authenticate:1']], function () {
 
         $logoutUrl = config('backstrap_laravel.logout_url');
-        Route::get($logoutUrl, [LoginController::class, 'logout']);
+        if($logoutUrl) {
+            Route::get($logoutUrl, [LoginController::class, 'logout']);
+        }
 
         $customHome = config('backstrap_laravel.custom_home');
         if(!$customHome) {
@@ -44,16 +46,22 @@ Route::group(['prefix' => $prefix, 'middleware' => ['web']], function() {
     Route::group(['middleware' => ['backstrap_laravel_admin_authenticate:0']], function() {
 
         $loginUrl = config('backstrap_laravel.login_url');
-        Route::get($loginUrl, [LoginController::class, 'login']);
-        Route::post($loginUrl, [LoginController::class,'authenticate']);
+        if($loginUrl) {
+            Route::get($loginUrl, [LoginController::class, 'login']);
+            Route::post($loginUrl, [LoginController::class, 'authenticate']);
+        }
 
         $forgotPasswordUrl = config('backstrap_laravel.forgot_password_url');
-        Route::get($forgotPasswordUrl, [ForgotPasswordController::class, 'forgotPassword']);
-        Route::post($forgotPasswordUrl, [ForgotPasswordController::class, 'requestNewPassword']);
+        if($forgotPasswordUrl) {
+            Route::get($forgotPasswordUrl, [ForgotPasswordController::class, 'forgotPassword']);
+            Route::post($forgotPasswordUrl, [ForgotPasswordController::class, 'requestNewPassword']);
+        }
 
         $passwordResetUrl = config('backstrap_laravel.password_reset_url');
-        Route::get($passwordResetUrl, [ForgotPasswordController::class, 'resetPassword']);
-        Route::post($passwordResetUrl, [ForgotPasswordController::class, 'changePassword']);
+        if($forgotPasswordUrl) {
+            Route::get($passwordResetUrl, [ForgotPasswordController::class, 'resetPassword']);
+            Route::post($passwordResetUrl, [ForgotPasswordController::class, 'changePassword']);
+        }
     });
 
 });

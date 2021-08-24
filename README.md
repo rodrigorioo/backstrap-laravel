@@ -1,7 +1,7 @@
 # Instalación
 
 1. ```composer require rodrigorioo/backstrap-laravel```
-2. ```php vendor:publish --provider="Rodrigorioo\BackStrapLaravel\BackStrapLaravelServiceProvider"```
+2. ```php artisan vendor:publish --provider="Rodrigorioo\BackStrapLaravel\BackStrapLaravelServiceProvider"```
 3. ```php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"```
 4. ```php artisan migrate```
 5. ```php artisan db:seed --class=AdministratorSeeder```
