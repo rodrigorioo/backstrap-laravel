@@ -116,7 +116,7 @@ return [
             'icon' => 'la la-lg la-home',
             // 'can' => ['ver home'],
         ],
-        'My account',
+        'Mi cuenta',
         [
             'text' => 'Perfil',
             'url'  => 'admin/profile',
