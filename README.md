@@ -4,9 +4,7 @@
 2. ```php artisan vendor:publish --provider="Rodrigorioo\BackStrapLaravel\BackStrapLaravelServiceProvider"```
 3. ```php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"```
 4. ```php artisan migrate```
-5. ```php artisan db:seed --class=AdministratorSeeder```
-6. ```php artisan db:seed --class=RoleSeeder```
-7. ```php artisan db:seed --class=ModelHasRoleSeeder```
+5. ```php artisan db:seed --class=BackStrapLaravelSeeder```
 
 Con esto nos creara el administrador con los datos:
 

@@ -28,14 +28,15 @@ class BackStrapLaravelService {
     }
 
     public static function getMetaTags () : string {
+
         return '
             <base href="./">
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-            <meta name="description" content="Backstrap - Open Source Bootstrap 4 Admin Template on top of CoreUI">
-            <meta name="author" content="Cristian Tabacitu">
-            <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard,CoreUI">
+            <meta name="description" content="'.config('backstrap_laravel.meta_description').'">
+            <meta name="author" content="'.config('backstrap_laravel.meta_author').'">
+            <meta name="keyword" content="'.config('backstrap_laravel.meta_keyword').'">
         ';
     }
     /**

@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Header
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'meta_description' => 'Backstrap - Open Source Bootstrap 4 Admin Template on top of CoreUI',
+    'meta_author' => 'Cristian Tabacitu',
+    'meta_keyword' => 'Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard,CoreUI',
+
+    /*
+    |--------------------------------------------------------------------------
     | Register & Forgot Password
     |--------------------------------------------------------------------------
     |
