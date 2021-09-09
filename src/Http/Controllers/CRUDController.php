@@ -2,36 +2,24 @@
 
 namespace Rodrigorioo\BackStrapLaravel\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
+use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
+use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Columns;
+use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Fields;
 use Yajra\DataTables\Facades\DataTables;
 
-class CRUDController extends Controller
+abstract class CRUDController extends Controller
 {
+    use Columns, Buttons, Fields;
+
     protected $model = null;
+    protected $modelClass = null;
     protected $modelName = '';
     protected $modelNamePlural = '';
 
-    protected $columns = [
-        'fields' => [],
-        'actions' => [
-            [
-                'type' => 'button',
-                'url' => '',
-                'classes' => 'btn btn-primary',
-                'text' => 'Editar',
-                'onclick' => '',
-            ],
-            [
-                'type' => 'button',
-                'url' => '',
-                'classes' => 'btn btn-danger',
-                'text' => 'Borrar',
-                'onclick' => '',
-            ],
-        ],
-    ];
-    protected $fields = [];
 
     public function __construct () {
 
@@ -45,6 +33,19 @@ class CRUDController extends Controller
                 $this->modelNamePlural = $this->modelName.'s';
             }
         }
+
+        $this->modelClass = new $this->model;
+
+        // COLUMNS
+        $this::addColumnsFromDB($this->modelClass); // TODO
+
+        // FIELDS
+        $this::addFieldsFromDB($this->modelClass); // TODO
+
+        // SETUP
+        $this->setup();
+
+
     }
 
     public function getUrl ($action, $id = null) {
@@ -54,8 +55,9 @@ class CRUDController extends Controller
 
         switch($action) {
 
-            case 'create':
             case 'index':
+            case 'create':
+            case 'store':
 
                 $url = action($controller.'@'.$action);
                 break;
@@ -87,21 +89,33 @@ class CRUDController extends Controller
     {
         if ($request->ajax()) {
 
+            $rawColumns = ['actions'];
             $elements = $this->model::latest()->get();
-
             $datatables = DataTables::of($elements);
 
-            foreach($this->columns as $column) {
+            $columns = $this::getColumns();
+            foreach($columns as $columnName => $column) {
 
-                $datatables->editColumn($column['name'], function($element) use($column) {
+                $datatables->addColumn($columnName, function($element) use($columnName, $column) {
 
+                    $value = $element->{$columnName};
                     $returnValue = null;
 
                      switch($column['type']) {
 
                          case 'text':
 
-                             $returnValue = $column['name'];
+                             $returnValue = $value;
+                             break;
+
+                         case 'datetime':
+
+                             $returnValue = Carbon::parse($value)->format('d/m/Y H:i:s');
+                             break;
+
+                         case 'date':
+
+                             $returnValue = Carbon::parse($value)->format('d/m/Y');
                              break;
                      }
 
@@ -109,41 +123,65 @@ class CRUDController extends Controller
                 });
             }
 
-            $actions = $this->columns['actions'];
-            $datatables->addColumn('actions', function($elemen) use($actions) {
+            $buttons = $this::getButtons();
+            $datatables->addColumn('actions', function($element) use($buttons) {
 
-                $buttons = '';
+                $actions = '<div class="d-flex align-items-center">';
 
-                foreach($actions as $action) {
+                foreach($buttons as $buttonName => $button) {
 
+                    switch($buttonName) {
+
+                        case 'edit_button':
+
+                            $button['html'] = '<a href="'.$this->getUrl('edit', $element->id).'" class="btn btn-success btn-sm mr-1">Editar</a>';
+                            break;
+
+                        case 'delete_button':
+
+                            $button['html'] = '<form method="POST" action="'.$this->getUrl('destroy', $element->id).'">
+                                '.csrf_field().'
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="delete btn btn-danger btn-sm" onclick="return confirm(\'Está seguro que desea eliminar este proyecto?\')">
+                                Borrar
+                                </button>
+                                </form>';
+                            break;
+
+                        default:
+
+                            break;
+                    }
+
+                    $actions .= $button['html'];
                 }
 
-                $editBtn =
-                    '<a href="'. action('\App\Http\Controllers\Backend\ProjectController@edit', $project) .'" class="edit btn btn-success btn-sm mr-1">'. 'Editar'. '</a>';
+                $actions .= '</div>';
 
-                $deleteBtn = '<form method="POST" action="'.action('\App\Http\Controllers\Backend\ProjectController@destroy', $project).'">'.csrf_field().
-                    '<input type="hidden" name="_method" value="DELETE">'.
-                    '<button type="submit" class="delete btn btn-danger btn-sm" onclick="return confirm(\'Está seguro que desea eliminar este proyecto?\')">'.
-                    'Borrar'.
-                    '</button>'.
-                    '</form>';
-
-                $action = '<div class="d-flex">'. $editBtn. $deleteBtn. '</div>';
-                return $action;
+                return $actions;
             });
 
-            foreach($this->columns['actions'] as $columnAction) {
-
-            }
-
-            $datatables->rawColumns(['actions'])
+            return $datatables->rawColumns($rawColumns)
                 ->make(true);
         }
+
+        $columnsTable = [];
+
+        $columns = $this::getColumns();
+        foreach($columns as $columnName => $column) {
+
+            $columnName = $column['name'];
+
+            $columnsTable[] = $columnName;
+        }
+        $columnsTable[] = '';
 
         return view('backstrap_laravel::admin.crud.index')->with(
             array_merge($this->viewData(), [
                 'urlCreate' => $this->getUrl('create'),
                 'urlIndex' => $this->getUrl('index'),
+                'columnsTable' => $columnsTable,
+                'columns' => $columns,
             ]),
         );
     }
@@ -155,7 +193,15 @@ class CRUDController extends Controller
      */
     public function create()
     {
-        //
+        $fields = $this::getFields();
+
+        return view('backstrap_laravel::admin.crud.create')->with(
+            array_merge($this->viewData(), [
+                'urlStore' => $this->getUrl('store'),
+                'urlIndex' => $this->getUrl('index'),
+                'fields' => $fields,
+            ]),
+        );
     }
 
     /**
@@ -172,7 +218,7 @@ class CRUDController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Post  $post
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -183,7 +229,7 @@ class CRUDController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Post  $post
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -195,7 +241,7 @@ class CRUDController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -206,11 +252,13 @@ class CRUDController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Post  $post
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
+
+    abstract public function setup ();
 }

@@ -32,10 +32,9 @@
                     <table class="table table-bordered administrators">
                         <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Está activo?</th>
-                            <th></th>
+                            @foreach($columnsTable as $columnTable)
+                                <th>{{ $columnTable }}</th>
+                            @endforeach
                         </tr>
                         </thead>
                         <tbody>
@@ -52,28 +51,43 @@
 <script>
 $(function () {
 
+    let columns = [];
+
+    @foreach($columns as $columnName => $column)
+        columns.push({
+            data: "{{ $columnName }}",
+            name: "{{ $columnName }}",
+        });
+    @endforeach
+
+    columns.push({
+        data: 'actions',
+        name: 'actions',
+    });
+
     var table = $('.administrators').DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ $urlIndex }}",
-        columns: [
-            {
-                data: 'name',
-                name: 'name',
-            },
-            {
-                data: 'email',
-                name: 'email',
-            },
-            {
-                data: 'is_active',
-                name: 'is_active',
-            },
-            {
-                data: 'action',
-                name: 'action',
-            },
-        ]
+        columns: columns,
+        // columns: [
+        //     {
+        //         data: 'name',
+        //         name: 'name',
+        //     },
+        //     {
+        //         data: 'email',
+        //         name: 'email',
+        //     },
+        //     {
+        //         data: 'is_active',
+        //         name: 'is_active',
+        //     },
+        //     {
+        //         data: 'action',
+        //         name: 'action',
+        //     },
+        // ]
     });
 
 });
