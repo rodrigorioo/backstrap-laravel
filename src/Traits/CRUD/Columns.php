@@ -2,7 +2,6 @@
 
 namespace Rodrigorioo\BackStrapLaravel\Traits\CRUD;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 trait Columns {
