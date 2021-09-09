@@ -37,10 +37,10 @@ abstract class CRUDController extends Controller
         $this->modelClass = new $this->model;
 
         // COLUMNS
-        $this::addColumnsFromDB($this->modelClass); // TODO
+        $this::addColumnsFromDB($this->modelClass);
 
         // FIELDS
-        $this::addFieldsFromDB($this->modelClass); // TODO
+        $this::addFieldsFromDB($this->modelClass);
 
         // SETUP
         $this->setup();
