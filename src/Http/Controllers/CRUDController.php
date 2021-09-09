@@ -17,8 +17,8 @@ abstract class CRUDController extends Controller
 
     protected $model = null;
     protected $modelClass = null;
-    protected $modelName = '';
-    protected $modelNamePlural = '';
+    protected string $modelName = '';
+    protected string $modelNamePlural = '';
 
 
     public function __construct () {
