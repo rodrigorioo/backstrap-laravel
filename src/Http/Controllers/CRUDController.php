@@ -5,7 +5,6 @@ namespace Rodrigorioo\BackStrapLaravel\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Columns;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Fields;
