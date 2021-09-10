@@ -59,4 +59,8 @@ trait Fields {
             ]);
         }
     }
+
+    public static function deleteField($fieldName) {
+        unset(self::$fields[$fieldName]);
+    }
 }

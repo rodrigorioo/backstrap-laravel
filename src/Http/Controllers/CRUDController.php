@@ -49,7 +49,6 @@ abstract class CRUDController extends Controller
         // SETUP
         $this->setup();
 
-
     }
 
     public function getUrl ($action, $id = null) {
@@ -143,7 +142,7 @@ abstract class CRUDController extends Controller
 
                         case 'delete_button':
 
-                            $button['html'] = '<form method="POST" action="'.$this->getUrl('destroy', $element->id).'">
+                            $button['html'] = '<form method="POST" action="'.$this->getUrl('destroy', $element->id).'" class="mr-1">
                                 '.csrf_field().'
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="delete btn btn-danger btn-sm" onclick="return confirm(\'Está seguro que desea eliminar este proyecto?\')">

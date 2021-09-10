@@ -59,4 +59,8 @@ trait Columns {
         }
     }
 
+    public static function deleteColumn($columnName) {
+        unset(self::$columns[$columnName]);
+    }
+
 }
