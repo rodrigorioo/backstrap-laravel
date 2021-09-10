@@ -24,7 +24,7 @@
             <x-backstrap_laravel::alert></x-backstrap_laravel::alert>
 
             <div class="card">
-                {{ Form::open(['url' => $urlUpdate, 'files' => true]) }}
+                {{ Form::open(['url' => $urlUpdate, 'method' => 'PUT', 'files' => true]) }}
                 <div class="card-header">
                     <strong>{{ $modelNamePlural }}</strong>
                 </div>

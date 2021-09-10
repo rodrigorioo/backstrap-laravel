@@ -270,12 +270,12 @@ abstract class CRUDController extends Controller
      */
     public function edit($id)
     {
-        $model = $this->model::find($id);
+        $model = $this->model::findOrFail($id);
         $fields = $this::getFields();
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
-                'urlUpdate' => $this->getUrl('store'),
+                'urlUpdate' => $this->getUrl('update', $id),
                 'urlIndex' => $this->getUrl('index'),
                 'fields' => $fields,
                 'model' => $model,
@@ -296,7 +296,7 @@ abstract class CRUDController extends Controller
 
         $fields = $this::getFields();
 
-        $model = $this->model::find($id);
+        $model = $this->model::findOrFail($id);
 
         foreach($fields as $nameField => $fieldData) {
 
@@ -336,7 +336,24 @@ abstract class CRUDController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $model = $this->model::findOrFail($id);
+
+        if ($model->delete()) {
+
+            return Redirect::to($this->getUrl('index'))->withAlert([
+                'title' => 'Éxito',
+                'text' => 'Operación realizada con éxito',
+                'icon' => 'success',
+                'confirm_button_text' => 'Cerrar',
+            ]);
+        }
+
+        return Redirect::to($this->getUrl('index'))->withAlert([
+            'title' => 'Error',
+            'text' => 'Ocurrió un error. Volvé a intentarlo',
+            'icon' => 'error',
+            'confirm_button_text' => 'Cerrar',
+        ]);
     }
 
     abstract public function setup ();
