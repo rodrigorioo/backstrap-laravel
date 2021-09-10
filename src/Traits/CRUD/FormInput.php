@@ -6,11 +6,26 @@ use Collective\Html\FormFacade;
 
 trait FormInput {
 
-    public static function getFormInput($inputName, $inputData, $errors) {
+    public static function getFormInput($inputName, $inputData, $errors, $model = null) {
 
         $returnInput = null;
 
-        $inputExtraData = ['class' => 'form-control '.($errors->has($inputName) ? 'is-invalid' : '')];
+        $class = '';
+
+        switch($inputData['type']) {
+
+            case 'text':
+            case 'textarea':
+            case 'select':
+                $class = 'form-control';
+                break;
+
+            default:
+                $class = 'form-control';
+                break;
+        }
+
+        $inputExtraData = ['class' => $class.' '.($errors->has($inputName) ? 'is-invalid' : '')];
         if(array_key_exists('required', $inputData)) {
             $inputExtraData['required'] = 'required';
         }
@@ -19,7 +34,14 @@ trait FormInput {
 
             case 'text':
             case 'textarea':
-                $returnInput = FormFacade::{$inputData['type']}($inputName, null, $inputExtraData);
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                $returnInput = FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
+                break;
         }
 
         return $returnInput;

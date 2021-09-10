@@ -4,6 +4,7 @@ namespace Rodrigorioo\BackStrapLaravel\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Rodrigorioo\BackStrapLaravel\Http\Requests\CRUD\CRUDRequest;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
@@ -216,6 +217,38 @@ abstract class CRUDController extends Controller
     public function store(Request $request)
     {
         $request = app(CRUDRequest::class, ['validation' => $this::getValidationCreate()]);
+
+        $fields = $this::getFields();
+
+        $model = new $this->model;
+        foreach($fields as $nameField => $fieldData) {
+
+            switch($fieldData['type']) {
+
+                case 'text':
+
+                    $model->{$nameField} = $request->{$nameField};
+                    break;
+            }
+
+        }
+
+        if ($model->save()) {
+
+            return Redirect::to($this->getUrl('index'))->withAlert([
+                'title' => 'Éxito',
+                'text' => 'Operación realizada con éxito',
+                'icon' => 'success',
+                'confirm_button_text' => 'Cerrar'
+            ]);
+        }
+
+        return Redirect::to($this->getUrl('index'))->withAlert([
+            'title' => 'Error',
+            'text' => 'Error detectado, inténtelo nuevamente',
+            'icon' => 'error',
+            'confirm_button_text' => 'Cerrar'
+        ]);
     }
 
     /**
@@ -226,7 +259,7 @@ abstract class CRUDController extends Controller
      */
     public function show($id)
     {
-        //
+        return $this->edit($id);
     }
 
     /**
@@ -237,7 +270,17 @@ abstract class CRUDController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = $this->model::find($id);
+        $fields = $this::getFields();
+
+        return view('backstrap_laravel::admin.crud.edit')->with(
+            array_merge($this->viewData(), [
+                'urlUpdate' => $this->getUrl('store'),
+                'urlIndex' => $this->getUrl('index'),
+                'fields' => $fields,
+                'model' => $model,
+            ]),
+        );
     }
 
     /**
@@ -250,6 +293,39 @@ abstract class CRUDController extends Controller
     public function update(Request $request, $id)
     {
         $request = app(CRUDRequest::class, ['validation' => $this::getValidationEdit()]);
+
+        $fields = $this::getFields();
+
+        $model = $this->model::find($id);
+
+        foreach($fields as $nameField => $fieldData) {
+
+            switch($fieldData['type']) {
+
+                case 'text':
+
+                    $model->{$nameField} = $request->{$nameField};
+                    break;
+            }
+
+        }
+
+        if ($model->save()) {
+
+            return Redirect::to($this->getUrl('index'))->withAlert([
+                'title' => 'Éxito',
+                'text' => 'Operación realizada con éxito',
+                'icon' => 'success',
+                'confirm_button_text' => 'Cerrar'
+            ]);
+        }
+
+        return Redirect::to($this->getUrl('index'))->withAlert([
+            'title' => 'Error',
+            'text' => 'Error detectado, inténtelo nuevamente',
+            'icon' => 'error',
+            'confirm_button_text' => 'Cerrar'
+        ]);
     }
 
     /**
