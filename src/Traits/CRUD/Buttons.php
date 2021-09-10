@@ -13,11 +13,11 @@ trait Buttons {
         ],
     ];
 
-    public static function addButton ($buttonName, $html) {
-
+    public static function addButton ($buttonName, $data) {
+        self::$buttons[$buttonName] = $data;
     }
 
-    public static function getButtons () {
+    public static function getButtons (): array {
         return self::$buttons;
     }
 }

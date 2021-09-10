@@ -22,7 +22,7 @@ trait Fields {
         self::$fields[$fieldName] = $data;
     }
 
-    public static function getFields () {
+    public static function getFields (): array {
         return self::$fields;
     }
 

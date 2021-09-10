@@ -18,7 +18,7 @@ trait Columns {
         self::$columns[$columnName] = $data;
     }
 
-    public static function getColumns () {
+    public static function getColumns (): array {
         return self::$columns;
     }
 

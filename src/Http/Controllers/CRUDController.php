@@ -5,20 +5,21 @@ namespace Rodrigorioo\BackStrapLaravel\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Rodrigorioo\BackStrapLaravel\Http\Requests\CRUD\CRUDRequest;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Columns;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Fields;
+use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Validation;
 use Yajra\DataTables\Facades\DataTables;
 
 abstract class CRUDController extends Controller
 {
-    use Columns, Buttons, Fields;
+    use Columns, Buttons, Fields, Validation;
 
     protected $model = null;
     protected $modelClass = null;
     protected string $modelName = '';
     protected string $modelNamePlural = '';
-
 
     public function __construct () {
 
@@ -40,6 +41,9 @@ abstract class CRUDController extends Controller
 
         // FIELDS
         $this::addFieldsFromDB($this->modelClass);
+
+        // VALIDATIONS
+        $this::addValidationsFromDB($this->modelClass);
 
         // SETUP
         $this->setup();
@@ -211,7 +215,7 @@ abstract class CRUDController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request = app(CRUDRequest::class, ['validation' => $this::getValidationCreate()]);
     }
 
     /**
@@ -245,7 +249,7 @@ abstract class CRUDController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request = app(CRUDRequest::class, ['validation' => $this::getValidationEdit()]);
     }
 
     /**
