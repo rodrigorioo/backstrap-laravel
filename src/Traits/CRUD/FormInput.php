@@ -20,17 +20,14 @@ trait FormInput {
                 $class = 'form-control';
                 break;
 
-
-
             default:
                 $class = 'form-control-file';
                 break;
         }
 
         $inputExtraData = ['class' => $class.' '.($errors->has($inputName) ? 'is-invalid' : '')];
-        if(array_key_exists('required', $inputData)) {
-            $inputExtraData['required'] = 'required';
-        }
+
+        $inputExtraData = array_merge($inputExtraData, self::getInputExtraData($inputData));
 
         switch($inputData['type']) {
 
@@ -43,6 +40,18 @@ trait FormInput {
                 }
 
                 $returnInput = FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
+                break;
+
+            case 'select':
+
+                $values = $inputData['data'];
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                $returnInput = FormFacade::{$inputData['type']}($inputName, $values, $value, $inputExtraData);
                 break;
 
             case 'image':
@@ -64,5 +73,20 @@ trait FormInput {
         }
 
         return $returnInput;
+    }
+
+    private static function getInputExtraData($extraData) {
+
+        $inputExtraData = [];
+
+        if(array_key_exists('required', $extraData)) {
+            $inputExtraData['required'] = 'required';
+        }
+
+        if(array_key_exists('placeholder', $extraData)) {
+            $inputExtraData['placeholder'] = $extraData['placeholder'];
+        }
+
+        return $inputExtraData;
     }
 }

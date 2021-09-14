@@ -236,32 +236,7 @@ abstract class CRUDController extends Controller
         $fields = $this::getFields();
 
         $model = new $this->model;
-        foreach($fields as $nameField => $fieldData) {
-
-            switch($fieldData['type']) {
-
-                case 'text':
-
-                    $model->{$nameField} = $request->{$nameField};
-                    break;
-
-                case 'image':
-                case 'file':
-
-                    if($request->file($nameField)) {
-
-                        $uploadFile = config('backstrap_laravel.upload_file');
-                        $file = $request->file($nameField);
-
-                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
-
-                        $model->{$nameField} = $fileUrl;
-                    }
-
-                    break;
-            }
-
-        }
+        $model = $this->loadDataToModel($model, $fields, $request);
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
@@ -320,32 +295,7 @@ abstract class CRUDController extends Controller
         $fields = $this::getFields();
 
         $model = $this->model::findOrFail($id);
-
-        foreach($fields as $nameField => $fieldData) {
-
-            switch($fieldData['type']) {
-
-                case 'text':
-
-                    $model->{$nameField} = $request->{$nameField};
-                    break;
-
-                case 'image':
-                case 'file':
-
-                    if($request->file($nameField)) {
-
-                        $uploadFile = config('backstrap_laravel.upload_file');
-                        $file = $request->file($nameField);
-
-                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
-
-                        $model->{$nameField} = $fileUrl;
-                    }
-
-                    break;
-            }
-        }
+        $model = $this->loadDataToModel($model, $fields, $request);
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
@@ -373,6 +323,39 @@ abstract class CRUDController extends Controller
 
         $alertError = config('backstrap_laravel.alert_error');
         return Redirect::to($this->getUrl('index'))->withAlert($alertError);
+    }
+
+    private function loadDataToModel($model, $fields, Request $request) {
+
+        foreach($fields as $nameField => $fieldData) {
+
+            switch($fieldData['type']) {
+
+                case 'text':
+                case 'select':
+
+                    $model->{$nameField} = $request->{$nameField};
+                    break;
+
+                case 'image':
+                case 'file':
+
+                    if($request->file($nameField)) {
+
+                        $uploadFile = config('backstrap_laravel.upload_file');
+                        $file = $request->file($nameField);
+
+                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
+
+                        $model->{$nameField} = $fileUrl;
+                    }
+
+                    break;
+            }
+
+        }
+
+        return $model;
     }
 
     // SETUPS
