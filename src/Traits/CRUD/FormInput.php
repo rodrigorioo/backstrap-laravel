@@ -20,8 +20,10 @@ trait FormInput {
                 $class = 'form-control';
                 break;
 
+
+
             default:
-                $class = 'form-control';
+                $class = 'form-control-file';
                 break;
         }
 
@@ -41,6 +43,23 @@ trait FormInput {
                 }
 
                 $returnInput = FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
+                break;
+
+            case 'image':
+
+                $returnInput = '';
+
+                $value = null;
+                if($model !== null) {
+
+                    $value = $model->{$inputName};
+
+                    if($value != '') {
+                        $returnInput .= '<div class="my-1"><img src="'.asset($value).'" class="img-fluid" style="max-height: 150px;"></div>';
+                    }
+                }
+
+                $returnInput .= FormFacade::file($inputName, $inputExtraData);
                 break;
         }
 

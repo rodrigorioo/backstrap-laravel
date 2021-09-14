@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Rodrigorioo\BackStrapLaravel\Http\Requests\CRUD\CRUDRequest;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Columns;
@@ -99,7 +100,15 @@ abstract class CRUDController extends Controller
             $columns = $this::getColumns();
             foreach($columns as $columnName => $column) {
 
-                $datatables->addColumn($columnName, function($element) use($columnName, $column) {
+                // SET RAWCOLUMNS
+                switch($column['type']) {
+                    case 'image':
+
+                        $rawColumns[] = $columnName;
+                        break;
+                }
+
+                $datatables->addColumn($columnName, function($element) use($columnName, $column, &$rawColumns) {
 
                     $value = $element->{$columnName};
                     $returnValue = null;
@@ -119,6 +128,11 @@ abstract class CRUDController extends Controller
                          case 'date':
 
                              $returnValue = Carbon::parse($value)->format('d/m/Y');
+                             break;
+
+                         case 'image':
+
+                             $returnValue = '<img src="'.asset($value).'" class="img-fluid" style="max-height: 35px;">';
                              break;
                      }
 
@@ -196,6 +210,7 @@ abstract class CRUDController extends Controller
      */
     public function create()
     {
+
         $fields = $this::getFields();
 
         return view('backstrap_laravel::admin.crud.create')->with(
@@ -215,6 +230,7 @@ abstract class CRUDController extends Controller
      */
     public function store(Request $request)
     {
+
         $request = app(CRUDRequest::class, ['validation' => $this::getValidationCreate()]);
 
         $fields = $this::getFields();
@@ -228,26 +244,32 @@ abstract class CRUDController extends Controller
 
                     $model->{$nameField} = $request->{$nameField};
                     break;
+
+                case 'image':
+                case 'file':
+
+                    if($request->file($nameField)) {
+
+                        $uploadFile = config('backstrap_laravel.upload_file');
+                        $file = $request->file($nameField);
+
+                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
+
+                        $model->{$nameField} = $fileUrl;
+                    }
+
+                    break;
             }
 
         }
 
         if ($model->save()) {
-
-            return Redirect::to($this->getUrl('index'))->withAlert([
-                'title' => 'Éxito',
-                'text' => 'Operación realizada con éxito',
-                'icon' => 'success',
-                'confirm_button_text' => 'Cerrar'
-            ]);
+            $alertSuccess = config('backstrap_laravel.alert_success');
+            return Redirect::to($this->getUrl('index'))->withAlert($alertSuccess);
         }
 
-        return Redirect::to($this->getUrl('index'))->withAlert([
-            'title' => 'Error',
-            'text' => 'Error detectado, inténtelo nuevamente',
-            'icon' => 'error',
-            'confirm_button_text' => 'Cerrar'
-        ]);
+        $alertError = config('backstrap_laravel.alert_error');
+        return Redirect::to($this->getUrl('index'))->withAlert($alertError);
     }
 
     /**
@@ -269,6 +291,7 @@ abstract class CRUDController extends Controller
      */
     public function edit($id)
     {
+
         $model = $this->model::findOrFail($id);
         $fields = $this::getFields();
 
@@ -291,6 +314,7 @@ abstract class CRUDController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $request = app(CRUDRequest::class, ['validation' => $this::getValidationEdit()]);
 
         $fields = $this::getFields();
@@ -305,26 +329,31 @@ abstract class CRUDController extends Controller
 
                     $model->{$nameField} = $request->{$nameField};
                     break;
-            }
 
+                case 'image':
+                case 'file':
+
+                    if($request->file($nameField)) {
+
+                        $uploadFile = config('backstrap_laravel.upload_file');
+                        $file = $request->file($nameField);
+
+                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
+
+                        $model->{$nameField} = $fileUrl;
+                    }
+
+                    break;
+            }
         }
 
         if ($model->save()) {
-
-            return Redirect::to($this->getUrl('index'))->withAlert([
-                'title' => 'Éxito',
-                'text' => 'Operación realizada con éxito',
-                'icon' => 'success',
-                'confirm_button_text' => 'Cerrar'
-            ]);
+            $alertSuccess = config('backstrap_laravel.alert_success');
+            return Redirect::to($this->getUrl('index'))->withAlert($alertSuccess);
         }
 
-        return Redirect::to($this->getUrl('index'))->withAlert([
-            'title' => 'Error',
-            'text' => 'Error detectado, inténtelo nuevamente',
-            'icon' => 'error',
-            'confirm_button_text' => 'Cerrar'
-        ]);
+        $alertError = config('backstrap_laravel.alert_error');
+        return Redirect::to($this->getUrl('index'))->withAlert($alertError);
     }
 
     /**
@@ -337,23 +366,15 @@ abstract class CRUDController extends Controller
     {
         $model = $this->model::findOrFail($id);
 
-        if ($model->delete()) {
-
-            return Redirect::to($this->getUrl('index'))->withAlert([
-                'title' => 'Éxito',
-                'text' => 'Operación realizada con éxito',
-                'icon' => 'success',
-                'confirm_button_text' => 'Cerrar',
-            ]);
+        if ($model->save()) {
+            $alertSuccess = config('backstrap_laravel.alert_success');
+            return Redirect::to($this->getUrl('index'))->withAlert($alertSuccess);
         }
 
-        return Redirect::to($this->getUrl('index'))->withAlert([
-            'title' => 'Error',
-            'text' => 'Ocurrió un error. Volvé a intentarlo',
-            'icon' => 'error',
-            'confirm_button_text' => 'Cerrar',
-        ]);
+        $alertError = config('backstrap_laravel.alert_error');
+        return Redirect::to($this->getUrl('index'))->withAlert($alertError);
     }
 
+    // SETUPS
     abstract public function setup ();
 }

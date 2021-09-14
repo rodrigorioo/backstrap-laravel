@@ -35,7 +35,7 @@
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         {{ Form::label($fieldName, $fieldData['name']) }}
-                                        {{ BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors) }}
+                                        {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors) !!}
 
                                         @if ($errors->has($fieldName))
                                             <span class="error invalid-feedback">{{ $errors->first($fieldName) }}</span>

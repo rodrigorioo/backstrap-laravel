@@ -40,6 +40,9 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
 
         // GUARDS
         $this->addGuard();
+
+        // FILESYSTEMS
+        $this->addFilesystem();
     }
 
     public function boot () {
@@ -121,6 +124,18 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
             'table' => $guard['passwords']['table'],
             'expire' => $guard['passwords']['expire'],
             'throttle' => $guard['passwords']['throttle'],
+        ]);
+    }
+
+    public function addFilesystem () {
+
+        $config = $this->app->make('config');
+
+        $uploadFile = config('backstrap_laravel.upload_file');
+
+        $config->set('filesystems.disks.backstrap_laravel', [
+            'driver' => $uploadFile['driver'],
+            'root' => public_path($uploadFile['directory']),
         ]);
     }
 }
