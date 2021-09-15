@@ -14,14 +14,17 @@ trait FormInput {
 
         switch($inputData['type']) {
 
-            case 'text':
-            case 'textarea':
-            case 'select':
-                $class = 'form-control';
+            case 'image':
+                $class = 'form-control-file';
+                break;
+
+            case 'checkbox':
+            case 'radio':
+                $class = 'form-check-input';
                 break;
 
             default:
-                $class = 'form-control-file';
+                $class = 'form-control';
                 break;
         }
 
@@ -30,17 +33,6 @@ trait FormInput {
         $inputExtraData = array_merge($inputExtraData, self::getInputExtraData($inputData));
 
         switch($inputData['type']) {
-
-            case 'text':
-            case 'textarea':
-
-                $value = null;
-                if($model !== null) {
-                    $value = $model->{$inputName};
-                }
-
-                $returnInput = FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
-                break;
 
             case 'select':
 
@@ -51,12 +43,63 @@ trait FormInput {
                     $value = $model->{$inputName};
                 }
 
-                $returnInput = FormFacade::{$inputData['type']}($inputName, $values, $value, $inputExtraData);
+                $returnInput = FormFacade::label($inputName, $inputData['name']);
+                $returnInput .= FormFacade::{$inputData['type']}($inputName, $values, $value, $inputExtraData);
+                break;
+
+            case 'checkbox':
+
+                $returnInput = '<div class="row">';
+
+                $values = $inputData['data'];
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                foreach($values as $iValue => $textValue) {
+                    $returnInput .= '
+                                    <div class="col-12 col-sm-3">
+                                        <div class="form-check form-check-inline mr-1">
+                                            '.FormFacade::{$inputData['type']}($inputName.'[]', $iValue, ($value == $iValue), $inputExtraData).'
+                                            '.FormFacade::label($inputName.'[]', $textValue, ['class' => 'form-check-label']).'
+                                        </div>
+                                    </div>';
+                }
+
+                $returnInput .= '</div>';
+
+                break;
+
+            case 'radio':
+
+                $returnInput = '<div class="row">';
+
+                $values = $inputData['data'];
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                foreach($values as $iValue => $textValue) {
+                    $returnInput .= '
+                                    <div class="col-12 col-sm-3">
+                                        <div class="form-check form-check-inline mr-1">
+                                            '.FormFacade::{$inputData['type']}($inputName, $iValue, ($value == $iValue), $inputExtraData).'
+                                            '.FormFacade::label($inputName, $textValue, ['class' => 'form-check-label']).'
+                                        </div>
+                                    </div>';
+                }
+
+                $returnInput .= '</div>';
+
                 break;
 
             case 'image':
 
-                $returnInput = '';
+                $returnInput = FormFacade::label($inputName, $inputData['name']);
 
                 $value = null;
                 if($model !== null) {
@@ -69,6 +112,20 @@ trait FormInput {
                 }
 
                 $returnInput .= FormFacade::file($inputName, $inputExtraData);
+                break;
+
+            default:
+
+            case 'text':
+            case 'textarea':
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                $returnInput = FormFacade::label($inputName, $inputData['name']);
+                $returnInput .= FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
                 break;
         }
 

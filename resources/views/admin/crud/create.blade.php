@@ -34,7 +34,6 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        {{ Form::label($fieldName, $fieldData['name']) }}
                                         {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors) !!}
 
                                         @if ($errors->has($fieldName))

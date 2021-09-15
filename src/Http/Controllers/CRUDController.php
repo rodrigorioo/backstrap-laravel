@@ -331,12 +331,6 @@ abstract class CRUDController extends Controller
 
             switch($fieldData['type']) {
 
-                case 'text':
-                case 'select':
-
-                    $model->{$nameField} = $request->{$nameField};
-                    break;
-
                 case 'image':
                 case 'file':
 
@@ -350,6 +344,11 @@ abstract class CRUDController extends Controller
                         $model->{$nameField} = $fileUrl;
                     }
 
+                    break;
+
+                default:
+
+                    $model->{$nameField} = $request->{$nameField};
                     break;
             }
 
