@@ -57,6 +57,7 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
 
         // ROUTES
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
 
         // MIGRATIONS
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');

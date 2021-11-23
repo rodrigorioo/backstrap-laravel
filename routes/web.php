@@ -7,6 +7,7 @@ use Rodrigorioo\BackStrapLaravel\Http\Controllers\Auth\LoginController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\AdminController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController;
+use Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\Auth\ForgotPasswordController;
 
 $prefix = config('backstrap_laravel.prefix');
@@ -28,6 +29,19 @@ Route::group(['prefix' => $prefix, 'middleware' => ['web']], function() {
         // PROFILE
         Route::get('profile', [ProfileController::class, 'index']);
         Route::post('profile/update', [ProfileController::class, 'update']);
+
+        // ROLES
+        $crudRoles = config('backstrap_laravel.crud_roles.enable');
+        if($crudRoles) {
+            Route::resource('roles', RoleController::class);
+
+            // PERMISSIONS
+            $crudPermissions = config('backstrap_laravel.crud_permissions.enable');
+            if($crudPermissions) {
+                Route::get('roles/{role}/permissions', [RoleController::class, 'permissions']);
+                Route::post('roles/{role}/permissions', [RoleController::class, 'updatePermissions']);
+            }
+        }
 
         $guard = config('backstrap_laravel.guard');
 

@@ -103,6 +103,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Roles & Permissions
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'crud_roles' => [
+        'enable' => true,
+    ],
+    'crud_permissions' => [
+        'enable' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Menu
     |--------------------------------------------------------------------------
     |
@@ -122,12 +137,18 @@ return [
             'url'  => 'admin/profile',
             'icon' => 'la la-lg la-user',
         ],
-        'General',
+        'Administración',
         [
             'text' => 'Administradores',
             'icon' => 'la la-lg la-users',
             'url' => 'admin/administrators',
         ],
+        [
+            'text' => 'Roles',
+            'icon' => 'la la-lg la-unlock',
+            'url' => 'admin/roles',
+        ],
+        'General',
         [
             'text' => 'Test Submenu',
             'icon' => 'la la-lg la-sitemap',
