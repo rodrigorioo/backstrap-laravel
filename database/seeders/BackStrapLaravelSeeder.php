@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Rodrigorioo\BackStrapLaravel\Models\Administrator;
 use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -22,34 +23,31 @@ class BackStrapLaravelSeeder extends Seeder
         $guard = config('backstrap_laravel.guard');
 
         // ADMINISTRATORS
-        DB::table('administrators')->insert([
-            'name' => 'Administrator',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('123456'),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
+        $administrator = Administrator::where('email', 'admin@admin.com')
+            ->first();
 
-        // ROLES & MODELS
-        try {
-            $role = Role::create(['name' => 'super-admin', 'guard_name' => $guard['name']]);
-        } catch(RoleAlreadyExists $e) {
-
+        if(empty($administrator)) {
+            $administrator = Administrator::create([
+                'name' => 'Administrator',
+                'email' => 'admin@admin.com',
+                'password' => bcrypt('123456'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
         }
 
-        DB::table('model_has_roles')->insert([
-            'role_id' => 1,
-            'model_type' => 'Rodrigorioo\BackStrapLaravel\Models\Administrator',
-            'model_id' => 1,
-        ]);
+        // ROLES & MODELS
+        $role = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => $guard['name']]);
+
+        $administrator->assignRole($role->name);
 
         // PERMISSIONS
-        Permission::firstOrCreate(['name' => 'listar roles', 'guard_name' => $guard]);
-        Permission::firstOrCreate(['name' => 'crear rol', 'guard_name' => $guard]);
-        Permission::firstOrCreate(['name' => 'guardar rol', 'guard_name' => $guard]);
-        Permission::firstOrCreate(['name' => 'ver rol', 'guard_name' => $guard]);
-        Permission::firstOrCreate(['name' => 'editar rol', 'guard_name' => $guard]);
-        Permission::firstOrCreate(['name' => 'eliminar rol', 'guard_name' => $guard]);
-        Permission::firstOrCreate(['name' => 'editar permisos de rol', 'guard_name' => $guard]);
+        Permission::firstOrCreate(['name' => 'listar roles', 'guard_name' => $guard['name']]);
+        Permission::firstOrCreate(['name' => 'crear rol', 'guard_name' => $guard['name']]);
+        Permission::firstOrCreate(['name' => 'guardar rol', 'guard_name' => $guard['name']]);
+        Permission::firstOrCreate(['name' => 'ver rol', 'guard_name' => $guard['name']]);
+        Permission::firstOrCreate(['name' => 'editar rol', 'guard_name' => $guard['name']]);
+        Permission::firstOrCreate(['name' => 'eliminar rol', 'guard_name' => $guard['name']]);
+        Permission::firstOrCreate(['name' => 'editar permisos de rol', 'guard_name' => $guard['name']]);
     }
 }

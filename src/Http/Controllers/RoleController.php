@@ -14,19 +14,19 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
 {
-//    public function __construct () {
-//        $guardName = config('backstrap_laravel.guard.name');
-//
-//        $this->middleware('permission:listar roles,'.$guardName, ['only' => ['index']]);
-//        $this->middleware('permission:crear rol,'.$guardName, ['only' => ['create']]);
-//        $this->middleware('permission:guardar rol,'.$guardName, ['only' => ['store']]);
-//        $this->middleware('permission:ver rol,'.$guardName, ['only' => ['show']]);
-//        $this->middleware('permission:ver rol,'.$guardName, ['only' => ['edit']]);
-//        $this->middleware('permission:editar rol,'.$guardName, ['only' => ['update']]);
-//        $this->middleware('permission:eliminar rol,'.$guardName, ['only' => ['destroy']]);
-//
-//        $this->middleware('permission:editar permisos de rol,'.$guardName, ['only' => ['permissions', 'updatePermissions']]);
-//    }
+    public function __construct () {
+        $guardName = config('backstrap_laravel.guard.name');
+
+        $this->middleware('permission:listar roles,'.$guardName, ['only' => ['index']]);
+        $this->middleware('permission:crear rol,'.$guardName, ['only' => ['create']]);
+        $this->middleware('permission:guardar rol,'.$guardName, ['only' => ['store']]);
+        $this->middleware('permission:ver rol,'.$guardName, ['only' => ['show']]);
+        $this->middleware('permission:ver rol,'.$guardName, ['only' => ['edit']]);
+        $this->middleware('permission:editar rol,'.$guardName, ['only' => ['update']]);
+        $this->middleware('permission:eliminar rol,'.$guardName, ['only' => ['destroy']]);
+
+        $this->middleware('permission:editar permisos de rol,'.$guardName, ['only' => ['permissions', 'updatePermissions']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -177,6 +177,6 @@ class RoleController extends Controller
         $role->syncPermissions($request->input('permissions'));
 
         $alertSuccess = config('backstrap_laravel.alert_success');
-        return Redirect::action('App\Http\Controllers\Backend\RoleController@permissions', [$role])->withAlert($alertSuccess);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@permissions', [$role])->withAlert($alertSuccess);
     }
 }

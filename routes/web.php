@@ -48,7 +48,7 @@ Route::group(['prefix' => $prefix, 'middleware' => ['web']], function() {
         // ADMINISTRATORS
         Route::get('administrator/{administrator}/change-status', [AdministratorController::class, 'changeStatus'])->middleware('role:super-admin,'.$guard['name']);
 
-        Route::group([/*'middleware' => ['role:super-admin']*/], function() {
+        Route::group(['middleware' => ['role:super-admin,'.$guard['name']]], function() {
 
             Route::resources([
                 'administrators' => AdministratorController::class,
