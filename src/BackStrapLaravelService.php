@@ -14,15 +14,24 @@ class BackStrapLaravelService {
 
     public static function getTemplateConfiguration(array $configuration = []) : array {
 
+        $backgroundColorHeader = config('backstrap_laravel.background_color_header');
+        $backgroundColorNavbar = config('backstrap_laravel.background_color_navbar');
+        $backgroundColorBody = config('backstrap_laravel.background_color_body');
+        $backgroundColorFooter = config('backstrap_laravel.background_color_footer');
+
         return [
             'prefix' => config('backstrap_laravel.prefix'),
             'title' => config('backstrap_laravel.title'),
+            'background_color_header' => ($backgroundColorHeader != '') ? 'background-color: '.$backgroundColorHeader.'!important' : '',
             'menu' => Builder::getMenu(),
             'meta_tags' => self::getMetaTags(),
+            'background_color_navbar' => ($backgroundColorNavbar != '') ? 'background-color: '.$backgroundColorNavbar.'!important' : '',
             'css' => self::getCSS(),
             'js' => self::getJS(),
+            'background_color_body' => ($backgroundColorBody != '') ? 'background-color: '.$backgroundColorBody.'!important' : '',
             'logged_user' => self::getLoggedUser(),
             'login_configuration' => self::getLoginConfiguration(),
+            'background_color_footer' => ($backgroundColorFooter != '') ? 'background-color: '.$backgroundColorFooter.'!important' : '',
             'footer' => self::footer(),
         ];
     }

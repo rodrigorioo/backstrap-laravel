@@ -26,6 +26,7 @@ return [
     'meta_description' => 'Backstrap - Open Source Bootstrap 4 Admin Template on top of CoreUI',
     'meta_author' => 'Cristian Tabacitu',
     'meta_keyword' => 'Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard,CoreUI',
+    'background_color_header' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -109,6 +110,8 @@ return [
     |
     */
 
+    'background_color_navbar' => '',
+
     'menu' => [
         [
             'text' => 'Home',
@@ -153,11 +156,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Body
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'background_color_body' => '',
+
+    /*
+    |--------------------------------------------------------------------------
     | Footer
     |--------------------------------------------------------------------------
     |
     |
     */
+
+    'background_color_footer' => '',
 
     'footer' => [
         'credits' => '&copy; 2019 Cristian Tabacitu.',

@@ -15,11 +15,11 @@
 
     {!! $templateConfiguration['css'] !!}
 
-    @yield('css')
+    @stack('css')
 
 </head>
 <body class="app aside-menu-fixed sidebar-lg-show">
-<header class="app-header bg-light border-0 navbar">
+<header class="app-header bg-light border-0 navbar" style="{!! $templateConfiguration['background_color_header'] !!}">
     <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto ml-3" type="button" data-toggle="sidebar-show">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -65,14 +65,14 @@
 
 </header>
 <div class="app-body">
-    <div class="sidebar sidebar-pills bg-transparent">
+    <div class="sidebar sidebar-pills bg-transparent" style="{!! $templateConfiguration['background_color_navbar'] !!}">
         <nav class="sidebar-nav">
             <ul class="nav">
                 {!! $templateConfiguration['menu'] !!}
             </ul>
         </nav>
     </div>
-    <main class="main">
+    <main class="main" style="{!! $templateConfiguration['background_color_body'] !!}">
 
         @yield('breadcrumbs')
 
@@ -230,7 +230,7 @@
 {{--    </aside>--}}
 
 </div>
-<footer class="app-footer">
+<footer class="app-footer" style="{!! $templateConfiguration['background_color_footer'] !!}">
     <div>
         <span>{!! $templateConfiguration['footer']['credits'] !!}</span>
     </div>
