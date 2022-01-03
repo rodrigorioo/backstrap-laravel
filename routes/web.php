@@ -7,6 +7,7 @@ use Rodrigorioo\BackStrapLaravel\Http\Controllers\Auth\LoginController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\AdminController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController;
+use Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController;
 use Rodrigorioo\BackStrapLaravel\Http\Controllers\Auth\ForgotPasswordController;
 
 $prefix = config('backstrap_laravel.prefix');
@@ -29,12 +30,25 @@ Route::group(['prefix' => $prefix, 'middleware' => ['web']], function() {
         Route::get('profile', [ProfileController::class, 'index']);
         Route::post('profile/update', [ProfileController::class, 'update']);
 
+        // ROLES
+        $crudRoles = config('backstrap_laravel.crud_roles.enable');
+        if($crudRoles) {
+            Route::resource('roles', RoleController::class);
+
+            // PERMISSIONS
+            $crudPermissions = config('backstrap_laravel.crud_permissions.enable');
+            if($crudPermissions) {
+                Route::get('roles/{role}/permissions', [RoleController::class, 'permissions']);
+                Route::post('roles/{role}/permissions', [RoleController::class, 'updatePermissions']);
+            }
+        }
+
         $guard = config('backstrap_laravel.guard');
 
         // ADMINISTRATORS
         Route::get('administrator/{administrator}/change-status', [AdministratorController::class, 'changeStatus'])->middleware('role:super-admin,'.$guard['name']);
 
-        Route::group([/*'middleware' => ['role:super-admin']*/], function() {
+        Route::group(['middleware' => ['role:super-admin,'.$guard['name']]], function() {
 
             Route::resources([
                 'administrators' => AdministratorController::class,

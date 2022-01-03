@@ -3,6 +3,7 @@
 namespace Rodrigorioo\BackStrapLaravel;
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Rodrigorioo\BackStrapLaravel\Facades\BackStrapLaravel;
 use Rodrigorioo\BackStrapLaravel\Http\Middleware\AdminAuthenticate;
@@ -57,6 +58,7 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
 
         // ROUTES
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
 
         // MIGRATIONS
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -65,6 +67,15 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__.'/../database/seeders' => database_path('seeders'),
         ], 'seeders');
+
+        // ROLES & PERMISSIONS
+        $rolesEnabled = config('backstrap_laravel.crud_roles.enable');
+        $permissionsEnabled = config('backstrap_laravel.crud_permissions.enable');
+        if($rolesEnabled && $permissionsEnabled) {
+            Gate::before(function ($user, $ability) {
+                return $user->hasRole('super-admin') ? true : null;
+            });
+        }
 
         // VIEWS
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'backstrap_laravel');
