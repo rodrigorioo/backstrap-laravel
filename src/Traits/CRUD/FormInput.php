@@ -15,7 +15,7 @@ trait FormInput {
         switch($inputData['type']) {
 
             case 'image':
-                $class = 'form-control-file';
+                $class = 'form-control-file '.($errors->has($inputName) ? 'is-invalid' : '');
                 break;
 
             case 'checkbox':
@@ -24,13 +24,11 @@ trait FormInput {
                 break;
 
             default:
-                $class = 'form-control';
+                $class = 'form-control '.($errors->has($inputName) ? 'is-invalid' : '');
                 break;
         }
 
-        $inputExtraData = ['class' => $class.' '.($errors->has($inputName) ? 'is-invalid' : '')];
-
-        $inputExtraData = array_merge($inputExtraData, self::getInputExtraData($inputData));
+        $inputExtraData = array_merge(['class' => $class], self::getInputExtraData($inputData));
 
         switch($inputData['type']) {
 
@@ -130,6 +128,26 @@ trait FormInput {
         }
 
         return $returnInput;
+    }
+
+    public static function getInputErrorMessage ($errors, $inputName, $inputData) {
+
+        $errorMessage = '<span class="error invalid-feedback">'.$errors->first($inputName).'</span>';
+
+        if($errors->has($inputName)) {
+
+            switch($inputData['type']) {
+                case 'checkbox':
+                case 'radio':
+                    $errorMessage = '<span class="error invalid-feedback d-block">'.$errors->first($inputName).'</span>';
+                    break;
+
+            }
+
+            return $errorMessage;
+        }
+
+        return '';
     }
 
     private static function getInputExtraData($extraData) {

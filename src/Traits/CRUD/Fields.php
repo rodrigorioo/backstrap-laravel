@@ -26,6 +26,19 @@ trait Fields {
         return self::$fields;
     }
 
+    public static function getFieldsWithoutInput (): array {
+        $fields = [];
+
+        foreach(self::$fields as $fieldName => $field) {
+
+            if(!isset($field['card']) || $field['card'] == '') {
+                $fields[$fieldName] = $field;
+            }
+        }
+
+        return $fields;
+    }
+
     public static function setFields ($setFields) {
 
         $fields = self::$fields;

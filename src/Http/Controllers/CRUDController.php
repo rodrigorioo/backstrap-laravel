@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Rodrigorioo\BackStrapLaravel\Http\Requests\CRUD\CRUDRequest;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
+use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Cards;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Columns;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Fields;
 use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Validation;
@@ -16,7 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 abstract class CRUDController extends Controller
 {
-    use Columns, Buttons, Fields, Validation;
+    use Columns, Buttons, Fields, Cards, Validation;
 
     protected $model = null;
     protected $modelClass = null;
@@ -182,8 +183,8 @@ abstract class CRUDController extends Controller
                 ->make(true);
         }
 
+        // GET COLUMNS NAMES
         $columnsTable = [];
-
         $columns = $this::getColumns();
         foreach($columns as $columnName => $column) {
 
@@ -210,14 +211,12 @@ abstract class CRUDController extends Controller
      */
     public function create()
     {
-
-        $fields = $this::getFields();
-
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
                 'urlStore' => $this->getUrl('store'),
                 'urlIndex' => $this->getUrl('index'),
-                'fields' => $fields,
+                'cards' => $this::getCards($this::getFields()),
+                'fieldsWithoutInput' => $this::getFieldsWithoutInput(),
             ]),
         );
     }
@@ -230,7 +229,6 @@ abstract class CRUDController extends Controller
      */
     public function store(Request $request)
     {
-
         $request = app(CRUDRequest::class, ['validation' => $this::getValidationCreate()]);
 
         $fields = $this::getFields();
@@ -266,15 +264,14 @@ abstract class CRUDController extends Controller
      */
     public function edit($id)
     {
-
         $model = $this->model::findOrFail($id);
-        $fields = $this::getFields();
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
                 'urlUpdate' => $this->getUrl('update', $id),
                 'urlIndex' => $this->getUrl('index'),
-                'fields' => $fields,
+                'cards' => $this::getCards($this::getFields()),
+                'fieldsWithoutInput' => $this::getFieldsWithoutInput(),
                 'model' => $model,
             ]),
         );
