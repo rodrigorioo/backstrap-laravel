@@ -23,6 +23,7 @@ abstract class CRUDController extends Controller
     protected $modelClass = null;
     protected string $modelName = '';
     protected string $modelNamePlural = '';
+    protected array $parameters = [];
 
     public function __construct () {
 
@@ -48,9 +49,17 @@ abstract class CRUDController extends Controller
         // VALIDATIONS
         $this::addValidationsFromDB($this->modelClass);
 
+        // ROUTE PARAMETERS
+        $this::setRouteParameters();
+
         // SETUP
         $this->setup();
 
+    }
+
+    public function setRouteParameters () {
+        $parameters = Route::getCurrentRoute()->parameters;
+        $this->parameters = $parameters;
     }
 
     public function getUrl ($action, $id = null) {
@@ -70,7 +79,7 @@ abstract class CRUDController extends Controller
             case 'create':
             case 'store':
 
-                $url = action($controller.'@'.$action, $parameters);
+                $url = action($controller.'@'.$action, array_values($this->parameters));
                 break;
 
             case 'show':
@@ -78,8 +87,7 @@ abstract class CRUDController extends Controller
             case 'update':
             case 'destroy':
 
-                $parameters[] = $id; // Add "id" to route parameters
-                $url = action($controller.'@'.$action, $parameters);
+                $url = action($controller.'@'.$action, array_merge(array_values($this->parameters), [$id]));
                 break;
         }
 
@@ -102,7 +110,8 @@ abstract class CRUDController extends Controller
         if ($request->ajax()) {
 
             $rawColumns = ['actions'];
-            $elements = $this->model::latest()->get();
+            // $elements = $this->model::latest()->get();
+            $elements = $this->queryGetModels()->get();
             $datatables = DataTables::of($elements);
 
             $columns = $this::getColumns();
@@ -407,6 +416,10 @@ abstract class CRUDController extends Controller
         }
 
         return $model;
+    }
+
+    public function queryGetModels () {
+        return $this->model::latest();
     }
 
     // SETUPS
