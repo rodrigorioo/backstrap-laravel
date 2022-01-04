@@ -23,6 +23,10 @@ trait FormInput {
                 $class = 'form-check-input';
                 break;
 
+            case 'ckeditor':
+                $class = 'form-control ckeditor';
+                break;
+
             default:
                 $class = 'form-control '.($errors->has($inputName) ? 'is-invalid' : '');
                 break;
@@ -124,6 +128,17 @@ trait FormInput {
 
                 $returnInput = FormFacade::label($inputName, $inputData['name']);
                 $returnInput .= FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
+                break;
+
+            case 'ckeditor':
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                $returnInput = FormFacade::label($inputName, $inputData['name']);
+                $returnInput .= FormFacade::textarea($inputName, $value, $inputExtraData);
                 break;
         }
 

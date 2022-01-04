@@ -77,3 +77,18 @@
     </div>
 
 @stop
+
+@section('js')
+
+    <script src="{{ asset("vendor/backstrap_laravel/ckeditor/ckeditor.js") }}"></script>
+
+    <script>
+        $('textarea.ckeditor').each(function() {
+
+            CKEDITOR.replace($(this).attr('name'), {
+                customConfig: '/vendor/backstrap_laravel/ckeditor/config.js',
+            });
+        });
+    </script>
+
+@stop
