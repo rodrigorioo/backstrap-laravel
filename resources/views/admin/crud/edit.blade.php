@@ -11,7 +11,7 @@
                 'url' => $urlIndex,
             ],
             [
-                'text' => 'Crear',
+                'text' => 'Editar',
             ],
         ]) !!}
 @stop
