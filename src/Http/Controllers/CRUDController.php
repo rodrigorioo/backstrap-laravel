@@ -55,6 +55,12 @@ abstract class CRUDController extends Controller
 
     public function getUrl ($action, $id = null) {
 
+        // GET ROUTE PARAMETERS
+        $parameters = [];
+        foreach(Route::getCurrentRoute()->parameters as $nameParameter => $valueParameter) {
+            $parameters[] = $valueParameter;
+        }
+
         $url = '';
         $controller = explode('@', Route::currentRouteAction())[0];
 
@@ -64,7 +70,7 @@ abstract class CRUDController extends Controller
             case 'create':
             case 'store':
 
-                $url = action($controller.'@'.$action);
+                $url = action($controller.'@'.$action, $parameters);
                 break;
 
             case 'show':
@@ -72,7 +78,8 @@ abstract class CRUDController extends Controller
             case 'update':
             case 'destroy':
 
-                $url = action($controller.'@'.$action, $id);
+                $parameters[] = $id; // Add "id" to route parameters
+                $url = action($controller.'@'.$action, $parameters);
                 break;
         }
 
@@ -167,6 +174,54 @@ abstract class CRUDController extends Controller
                             break;
 
                         default:
+
+                            $text = $button['text'];
+                            $classes = $button['classes'];
+                            $link = $button['link'];
+
+                            $html = '';
+
+                            if($link) {
+
+                                $urlLink = '';
+
+                                if(is_array($link)) {
+                                    self::addButton($buttonName, [
+                                        'html' => '',
+                                        'link' => $link,
+                                    ]);
+
+                                    $buttonLink = $button['link'];
+
+                                    switch($buttonLink['type']) {
+
+                                        case 'action':
+
+                                            $dataLink = [];
+
+                                            if(isset($buttonLink['model']) && $buttonLink['model']) {
+                                                $dataLink[] = $element;
+                                            }
+
+                                            $urlLink = action($buttonLink['url'], $dataLink);
+
+                                            break;
+                                    }
+
+                                } else {
+                                    $urlLink = $link;
+                                }
+
+                                $html .= '<a href="'.$urlLink.'">';
+                            }
+
+                            $html .= '<button type="button" class="btn '.$classes.' mr-2 btn--'.$buttonName.'">'.$text.'</button>';
+
+                            if($link) {
+                                $html .= '</a>';
+                            }
+
+                            $button['html'] = $html;
 
                             break;
                     }

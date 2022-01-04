@@ -3,6 +3,7 @@
 namespace Rodrigorioo\BackStrapLaravel\Traits\CRUD;
 
 use Collective\Html\FormFacade;
+use Illuminate\Support\Facades\Route;
 
 trait FormInput {
 
@@ -116,8 +117,6 @@ trait FormInput {
                 $returnInput .= FormFacade::file($inputName, $inputExtraData);
                 break;
 
-            default:
-
             case 'text':
             case 'textarea':
 
@@ -140,6 +139,48 @@ trait FormInput {
                 $returnInput = FormFacade::label($inputName, $inputData['name']);
                 $returnInput .= FormFacade::textarea($inputName, $value, $inputExtraData);
                 break;
+
+            case 'hidden':
+
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                } else {
+
+                    if(isset($inputData['value'])) {
+
+                        $inputDataValue = $inputData['value'];
+
+                        if(is_array($inputDataValue)) {
+
+                            // If value of input is "route_parameter" we search this value into the route_parameters names
+                            if(isset($inputDataValue['route_parameter']) && $inputDataValue['route_parameter'] != '') {
+
+                                $routeParameter = $inputDataValue['route_parameter'];
+
+                                foreach(Route::getCurrentRoute()->parameters as $nameParameter => $valueParameter) {
+
+                                    // If we found this route parameter, we assign the value to the value of input
+                                    if($nameParameter == $routeParameter) {
+                                        $value = $valueParameter;
+                                    }
+                                }
+                            }
+
+                        } else {
+                            $value = $inputDataValue;
+                        }
+                    }
+                }
+
+                $returnInput .= FormFacade::hidden($inputName, $value, $inputExtraData);
+
+                break;
+
+            default:
+
+                break;
+
         }
 
         return $returnInput;
