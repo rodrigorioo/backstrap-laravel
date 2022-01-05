@@ -97,11 +97,19 @@ class AdministratorController extends Controller
 
         if ($administrator->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     /**
@@ -149,11 +157,19 @@ class AdministratorController extends Controller
 
         if ($administrator->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     /**
@@ -167,7 +183,11 @@ class AdministratorController extends Controller
         $administrator->delete();
 
         $alertSuccess = config('backstrap_laravel.alert_success');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertSuccess);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertSuccess, [
+            'title' => __('backstrap_laravel::alerts.success.title'),
+            'text' => __('backstrap_laravel::alerts.success.text'),
+            'close' => __('backstrap_laravel::alerts.success.close'),
+        ]));
     }
 
     public function changeStatus(ChangeStatusAdministratorRequest $request, Administrator $administrator) {
@@ -176,10 +196,18 @@ class AdministratorController extends Controller
 
         if ($administrator->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 }

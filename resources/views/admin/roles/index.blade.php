@@ -1,13 +1,13 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', 'Roles | Lista')
+@section('title', __('backstrap_laravel::roles.name_plural').' | '.__('backstrap_laravel::roles.index.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de roles',
+                'text' => __('backstrap_laravel::roles.index.list_of'),
             ],
         ]) !!}
 @stop
@@ -24,7 +24,7 @@
                     <strong>Roles</strong>
                     <div class="card-header-actions">
                         <a class="btn btn-block btn-success btn-sm" href="{{ action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@create') }}">
-                            <i class="icon-plus"></i> Nuevo</a>
+                            <i class="icon-plus"></i> {{ __('backstrap_laravel::roles.index.new') }}</a>
                     </div>
                 </div>
 
@@ -32,7 +32,7 @@
                     <table class="table table-bordered roles">
                         <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>{{ __('backstrap_laravel::roles.index.name') }}</th>
                             <th></th>
                         </tr>
                         </thead>

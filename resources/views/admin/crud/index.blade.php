@@ -1,13 +1,13 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', $modelNamePlural.' | Lista')
+@section('title', $modelNamePlural.' | '.__('backstrap_laravel::crud.index.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de '.$modelNamePlural,
+                'text' => __('backstrap_laravel::crud.index.list_of').$modelNamePlural,
             ],
         ]) !!}
 @stop
@@ -24,7 +24,7 @@
                     <strong>{{ $modelNamePlural }}</strong>
                     <div class="card-header-actions">
                         <a class="btn btn-block btn-success btn-sm" href="{{ $urlCreate }}">
-                            <i class="icon-plus"></i> Nuevo</a>
+                            <i class="icon-plus"></i> {{ __('backstrap_laravel::crud.index.new') }}</a>
                     </div>
                 </div>
 

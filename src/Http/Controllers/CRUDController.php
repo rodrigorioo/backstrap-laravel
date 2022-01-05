@@ -302,11 +302,19 @@ abstract class CRUDController extends Controller
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::to($this->getUrl('index'))->withAlert($alertSuccess);
+            return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::to($this->getUrl('index'))->withAlert($alertError);
+        return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     /**
@@ -360,11 +368,19 @@ abstract class CRUDController extends Controller
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::to($this->getUrl('index'))->withAlert($alertSuccess);
+            return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::to($this->getUrl('index'))->withAlert($alertError);
+        return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     /**
@@ -379,11 +395,19 @@ abstract class CRUDController extends Controller
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::to($this->getUrl('index'))->withAlert($alertSuccess);
+            return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::to($this->getUrl('index'))->withAlert($alertError);
+        return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     private function loadDataToModel($model, $fields, Request $request) {

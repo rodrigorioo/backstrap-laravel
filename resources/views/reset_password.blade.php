@@ -20,7 +20,7 @@
 
                         <x-backstrap_laravel::errors></x-backstrap_laravel::errors>
 
-                        <h1>Cambiar contraseña</h1>
+                        <h1>{{ __('backstrap_laravel::reset_password.change_password') }}</h1>
                         <p class="text-muted">Resetear la contraseña</p>
 
                         @if(session('success'))

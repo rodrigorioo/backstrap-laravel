@@ -1,17 +1,17 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', 'Roles | Editar')
+@section('title', __('backstrap_laravel::roles.name_plural').' | '.__('backstrap_laravel::roles.edit.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de roles',
+                'text' => __('backstrap_laravel::roles.edit.list_of'),
                 'url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')
             ],
             [
-                'text' => 'Editar',
+                'text' => __('backstrap_laravel::roles.edit.breadcrumb_title'),
             ],
         ]) !!}
 @stop
@@ -25,7 +25,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <strong>Rol</strong>
+                    <strong>{{ __('backstrap_laravel::roles.name_singular') }}</strong>
                 </div>
 
                 {{ Form::open(['url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@update', $element), 'method' => 'PUT', 'files' => true]) }}
@@ -34,7 +34,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('name', 'Nombre') }}
+                                    {{ Form::label('name', __('backstrap_laravel::roles.edit.input_name')) }}
                                     {{ Form::text('name', $element->name, ['class' => 'form-control '.($errors->has('name') ? 'is-invalid' : ''), 'required' => 'required']) }}
 
                                     @if ($errors->has('name'))
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="card-footer">
-                        {{ Form::submit('Guardar', ['class' => 'btn btn-success btn-sm']) }}
+                        {{ Form::submit(__('backstrap_laravel::roles.edit.submit_button'), ['class' => 'btn btn-success btn-sm']) }}
                     </div>
 
                 {{ Form::close() }}

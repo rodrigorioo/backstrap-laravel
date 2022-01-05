@@ -80,16 +80,10 @@ return [
     */
 
     'alert_success' => [
-        'title' => 'Éxito',
-        'text' => 'Cambios guardados con éxito',
         'icon' => 'success',
-        'confirm_button_text' => 'Cerrar',
     ],
     'alert_error' => [
-        'title' => 'Error',
-        'text' => 'Ocurrió un error. Volvé a intentarlo',
         'icon' => 'error',
-        'confirm_button_text' => 'Cerrar',
     ],
 
     /*

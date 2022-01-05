@@ -1,17 +1,17 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', 'Administradores | Crear')
+@section('title', __('backstrap_laravel::administrators.name_plural').' | '.__('backstrap_laravel::administrators.create.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de administradores',
+                'text' => __('backstrap_laravel::administrators.create.list_of'),
                 'url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')
             ],
             [
-                'text' => 'Crear',
+                'text' => __('backstrap_laravel::administrators.create.breadcrumb_title'),
             ],
         ]) !!}
 @stop
@@ -26,13 +26,13 @@
             <div class="card">
                 {{ Form::open(['url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@store'), 'files' => true]) }}
                     <div class="card-header">
-                        <strong>Administradores</strong>
+                        <strong>{{ __('backstrap_laravel::administrators.name_plural') }}</strong>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('name', 'Nombre') }}
+                                    {{ Form::label('name', __('backstrap_laravel::administrators.create.input_name')) }}
                                     {{ Form::text('name', null, ['class' => 'form-control '.($errors->has('name') ? 'is-invalid' : ''), 'required' => 'required']) }}
 
                                     @if ($errors->has('name'))
@@ -71,7 +71,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('password_confirmation', 'Confirm Password') }}
+                                    {{ Form::label('password_confirmation', __('backstrap_laravel::administrators.create.confirm_password')) }}
                                     {{ Form::password('password_confirmation', ['class' => 'form-control '.($errors->has('password_confirmation') ? 'is-invalid' : ''), 'required' => 'required']) }}
 
                                     @if ($errors->has('password_confirmation'))
@@ -84,8 +84,8 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('role', 'Rol') }}
-                                    {{ Form::select('role', $roles, null, ['class' => 'form-control '.($errors->has('role') ? 'is-invalid' : ''), 'required' => 'required', 'placeholder' => 'Select']) }}
+                                    {{ Form::label('role', __('backstrap_laravel::administrators.create.role')) }}
+                                    {{ Form::select('role', $roles, null, ['class' => 'form-control '.($errors->has('role') ? 'is-invalid' : ''), 'required' => 'required', 'placeholder' => __('backstrap_laravel::administrators.create.role_select')]) }}
 
                                     @if ($errors->has('role'))
                                         <span class="error invalid-feedback">{{ $errors->first('role') }}</span>
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        {{ Form::submit('Crear', ['class' => 'btn btn-success btn-sm']) }}
+                        {{ Form::submit(__('backstrap_laravel::administrators.create.submit_button'), ['class' => 'btn btn-success btn-sm']) }}
                     </div>
                 {{ Form::close() }}
             </div>

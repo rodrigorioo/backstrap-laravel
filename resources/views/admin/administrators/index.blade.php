@@ -1,13 +1,13 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', 'Administradores | Lista')
+@section('title', __('backstrap_laravel::administrators.name_plural').' | '.__('backstrap_laravel::administrators.index.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de administradores',
+                'text' => __('backstrap_laravel::administrators.index.list_of'),
             ],
         ]) !!}
 @stop
@@ -21,10 +21,10 @@
 
             <div class="card">
                 <div class="card-header">
-                    <strong>Administradores</strong>
+                    <strong>{{ __('backstrap_laravel::administrators.name_plural') }}</strong>
                     <div class="card-header-actions">
                         <a class="btn btn-block btn-success btn-sm" href="{{ action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@create') }}">
-                            <i class="icon-plus"></i> Nuevo</a>
+                            <i class="icon-plus"></i> {{ __('backstrap_laravel::administrators.index.new') }}</a>
                     </div>
                 </div>
 
@@ -32,9 +32,9 @@
                     <table class="table table-bordered administrators">
                         <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>{{ __('backstrap_laravel::administrators.index.name') }}</th>
                             <th>Email</th>
-                            <th>Está activo?</th>
+                            <th>{{ __('backstrap_laravel::administrators.index.is_active') }}</th>
                             <th></th>
                         </tr>
                         </thead>

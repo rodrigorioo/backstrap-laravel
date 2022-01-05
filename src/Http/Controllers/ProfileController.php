@@ -32,10 +32,18 @@ class ProfileController extends Controller
 
         if ($user->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 }

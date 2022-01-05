@@ -88,6 +88,9 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
             Errors::class,
         ]);
 
+        // TRANSLATIONS
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'backstrap_laravel');
+
         // SEND TEMPLATE CONFIGURATION
         view()->composer('backstrap_laravel::login', function($view) {
             $view->with('templateConfiguration', BackStrapLaravel::getTemplateConfiguration());

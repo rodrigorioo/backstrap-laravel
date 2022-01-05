@@ -1,17 +1,17 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', $modelNamePlural.' | Editar')
+@section('title', $modelNamePlural.' | '.__('backstrap_laravel::crud.edit.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de '.$modelNamePlural,
+                'text' => __('backstrap_laravel::crud.edit.list_of').$modelNamePlural,
                 'url' => $urlIndex,
             ],
             [
-                'text' => 'Editar',
+                'text' => __('backstrap_laravel::crud.edit.breadcrumb_title'),
             ],
         ]) !!}
 @stop
@@ -69,7 +69,7 @@
 
                 </div>
                 <div class="card-footer">
-                    {{ Form::submit('Guardar', ['class' => 'btn btn-success btn-sm']) }}
+                    {{ Form::submit(__('backstrap_laravel::crud.edit.submit_button'), ['class' => 'btn btn-success btn-sm']) }}
                 </div>
                 {{ Form::close() }}
             </div>

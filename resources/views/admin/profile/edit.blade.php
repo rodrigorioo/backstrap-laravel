@@ -1,12 +1,12 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', 'Profile')
+@section('title', __('backstrap_laravel::profile.title'))
 
 @section('breadcrumbs')
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Profile',
+                'text' => __('backstrap_laravel::profile.breadcrumb_title'),
             ],
         ]) !!}
 @stop
@@ -20,7 +20,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <strong>Perfil</strong>
+                        <strong>{{ __('backstrap_laravel::profile.title') }}</strong>
                     </div>
 
                     {{ Form::open(['url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController@update'), 'method' => 'POST', 'files' => true]) }}
@@ -29,7 +29,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        {{ Form::label('name', 'Nombre') }}
+                                        {{ Form::label('name', __('backstrap_laravel::profile.input_name')) }}
                                         {{ Form::text('name', $user->name, ['class' => 'form-control '.($errors->has('name') ? 'is-invalid' : ''), 'required' => 'required']) }}
 
                                         @if ($errors->has('name'))
@@ -55,7 +55,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        {{ Form::label('password_confirmation', 'Confirm Password') }}
+                                        {{ Form::label('password_confirmation', __('backstrap_laravel::profile.confirm_password')) }}
                                         {{ Form::password('password_confirmation', ['class' => 'form-control '.($errors->has('password_confirmation') ? 'is-invalid' : '')]) }}
 
                                         @if ($errors->has('password_confirmation'))
@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="card-footer">
-                            {{ Form::submit('Guardar', ['class' => 'btn btn-success btn-sm']) }}
+                            {{ Form::submit(__('backstrap_laravel::profile.button_submit'), ['class' => 'btn btn-success btn-sm']) }}
                         </div>
 
                     {{ Form::close() }}

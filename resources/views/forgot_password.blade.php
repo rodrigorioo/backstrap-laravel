@@ -5,7 +5,7 @@
 
     {!! $templateConfiguration['meta_tags'] !!}
 
-    <title>{{ $templateConfiguration['title'] }} - Login</title>
+    <title>{{ $templateConfiguration['title'] }} - {{ __('backstrap_laravel::forgot_password.title') }}</title>
 
     {!! $templateConfiguration['css'] !!}
 </head>
@@ -20,8 +20,8 @@
 
                         <x-backstrap_laravel::errors></x-backstrap_laravel::errors>
 
-                        <h1>Olvidé mi contraseña</h1>
-                        <p class="text-muted">Solicitar cambio de contraseña</p>
+                        <h1>{{ __('backstrap_laravel::forgot_password.forgot_password') }}</h1>
+                        <p class="text-muted">{{ __('backstrap_laravel::forgot_password.request_change') }}</p>
 
                         @if(session('success'))
 
@@ -43,7 +43,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        {{ Form::submit('Solicitar cambio', ['class' => 'btn btn-primary px-4']) }}
+                                        {{ Form::submit(__('backstrap_laravel::forgot_password.request_change_submit'), ['class' => 'btn btn-primary px-4']) }}
                                     </div>
                                 </div>
 

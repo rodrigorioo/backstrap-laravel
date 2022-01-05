@@ -47,13 +47,13 @@
                 {{ $templateConfiguration['logged_user']->name }}
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-header"><strong>Settings</strong></div>
+                <div class="dropdown-header"><strong>{{ __('backstrap_laravel::layout.settings') }}</strong></div>
                 <a class="dropdown-item" href="{{ action('Rodrigorioo\BackStrapLaravel\Http\Controllers\ProfileController@index') }}">
-                    <i class="fa fa-user"></i> Profile
+                    <i class="fa fa-user"></i> {{ __('backstrap_laravel::layout.profile') }}
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ url($templateConfiguration['login_configuration']['full_logout_url']) }}">
-                    <i class="fa fa-lock"></i> Logout
+                    <i class="fa fa-lock"></i> {{ __('backstrap_laravel::layout.logout') }}
                 </a>
             </div>
         </li>

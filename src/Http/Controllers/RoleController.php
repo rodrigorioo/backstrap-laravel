@@ -92,11 +92,19 @@ class RoleController extends Controller
         if ($role->save()) {
 
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     /**
@@ -137,11 +145,19 @@ class RoleController extends Controller
         if ($role->save()) {
 
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     /**
@@ -155,11 +171,19 @@ class RoleController extends Controller
         if ($role->delete()) {
 
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert($alertSuccess);
+            return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert(array_merge($alertSuccess, [
+                'title' => __('backstrap_laravel::alerts.success.title'),
+                'text' => __('backstrap_laravel::alerts.success.text'),
+                'close' => __('backstrap_laravel::alerts.success.close'),
+            ]));
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert($alertError);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@index')->withAlert(array_merge($alertError, [
+            'title' => __('backstrap_laravel::alerts.error.title'),
+            'text' => __('backstrap_laravel::alerts.error.text'),
+            'close' => __('backstrap_laravel::alerts.error.close'),
+        ]));
     }
 
     public function permissions(Role $role) {
@@ -177,6 +201,10 @@ class RoleController extends Controller
         $role->syncPermissions($request->input('permissions'));
 
         $alertSuccess = config('backstrap_laravel.alert_success');
-        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@permissions', [$role])->withAlert($alertSuccess);
+        return Redirect::action('Rodrigorioo\BackStrapLaravel\Http\Controllers\RoleController@permissions', [$role])->withAlert(array_merge($alertSuccess, [
+            'title' => __('backstrap_laravel::alerts.success.title'),
+            'text' => __('backstrap_laravel::alerts.success.text'),
+            'close' => __('backstrap_laravel::alerts.success.close'),
+        ]));
     }
 }

@@ -27,7 +27,7 @@
                         <x-backstrap_laravel::errors></x-backstrap_laravel::errors>
 
                         <h1>Login</h1>
-                        <p class="text-muted">Sign In to your account</p>
+                        <p class="text-muted">{{ __('backstrap_laravel::login.sign_in') }}</p>
 
                         {{ Form::open(['url' => url($templateConfiguration['login_configuration']['full_login_url']), 'method' => 'POST', 'files' => true]) }}
                             <div class="input-group mb-3">
@@ -54,7 +54,7 @@
                                 @if($templateConfiguration['login_configuration']['forgot_password_url'])
                                     <div class="col-6 text-right">
                                         <a href="{{ url($templateConfiguration['login_configuration']['full_forgot_password_url']) }}">
-                                            <button class="btn btn-link px-0" type="button">Forgot password?</button>
+                                            <button class="btn btn-link px-0" type="button">{{ __('backstrap_laravel::login.forgot_password') }}</button>
                                         </a>
                                     </div>
                                 @endif

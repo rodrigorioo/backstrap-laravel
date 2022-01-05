@@ -1,9 +1,9 @@
 @extends('backstrap_laravel::admin.layout')
 
 @section('content_header')
-    <h1>Home</h1>
+    <h1>{{ __('backstrap_laravel::home.home') }}</h1>
 @stop
 
 @section('content')
-    <p>Welcome to this beautiful admin panel.</p>
+    <p>{{ __('backstrap_laravel::home.welcome') }}</p>
 @stop

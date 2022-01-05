@@ -1,17 +1,17 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', $modelNamePlural.' | Crear')
+@section('title', $modelNamePlural.' | '.__('backstrap_laravel::crud.create.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de '.$modelNamePlural,
+                'text' => __('backstrap_laravel::crud.create.list_of').$modelNamePlural,
                 'url' => $urlIndex,
             ],
             [
-                'text' => 'Crear',
+                'text' => __('backstrap_laravel::crud.create.breadcrumb_title'),
             ],
         ]) !!}
 @stop
@@ -69,7 +69,7 @@
 
                     </div>
                     <div class="card-footer">
-                        {{ Form::submit('Crear', ['class' => 'btn btn-success btn-sm']) }}
+                        {{ Form::submit(__('backstrap_laravel::crud.create.submit_button'), ['class' => 'btn btn-success btn-sm']) }}
                     </div>
                 {{ Form::close() }}
             </div>

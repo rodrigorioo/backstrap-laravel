@@ -1,17 +1,17 @@
 @extends('backstrap_laravel::admin.layout')
 
-@section('title', 'Administradores | Editar')
+@section('title', __('backstrap_laravel::administrators.name_plural').' | '.__('backstrap_laravel::administrators.edit.title'))
 
 @section('breadcrumbs')
 
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             [
-                'text' => 'Lista de administradores',
+                'text' => __('backstrap_laravel::administrators.edit.list_of'),
                 'url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@index')
             ],
             [
-                'text' => 'Editar',
+                'text' => __('backstrap_laravel::administrators.edit.breadcrumb_title'),
             ],
         ]) !!}
 @stop
@@ -25,7 +25,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <strong>Administrador</strong>
+                    <strong>{{ __('backstrap_laravel::administrators.name_singular') }}</strong>
                 </div>
 
                 {{ Form::open(['url' => action('Rodrigorioo\BackStrapLaravel\Http\Controllers\AdministratorController@update', $element), 'method' => 'PUT', 'files' => true]) }}
@@ -34,7 +34,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('name', 'Nombre') }}
+                                    {{ Form::label('name', __('backstrap_laravel::administrators.edit.input_name')) }}
                                     {{ Form::text('name', $element->name, ['class' => 'form-control '.($errors->has('name') ? 'is-invalid' : ''), 'required' => 'required']) }}
 
                                     @if ($errors->has('name'))
@@ -73,7 +73,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('password_confirmation', 'Confirm Password') }}
+                                    {{ Form::label('password_confirmation', __('backstrap_laravel::administrators.edit.confirm_password')) }}
                                     {{ Form::password('password_confirmation', ['class' => 'form-control '.($errors->has('password_confirmation') ? 'is-invalid' : '')]) }}
 
                                     @if ($errors->has('password_confirmation'))
@@ -86,8 +86,8 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    {{ Form::label('role', 'Rol') }}
-                                    {{ Form::select('role', $roles, $element->roles()->first()->id, ['class' => 'form-control '.($errors->has('role') ? 'is-invalid' : ''), 'required' => 'required', 'placeholder' => 'Seleccionar']) }}
+                                    {{ Form::label('role', __('backstrap_laravel::administrators.edit.role')) }}
+                                    {{ Form::select('role', $roles, $element->roles()->first()->id, ['class' => 'form-control '.($errors->has('role') ? 'is-invalid' : ''), 'required' => 'required', 'placeholder' => __('backstrap_laravel::administrators.edit.role_select')]) }}
 
                                     @if ($errors->has('role'))
                                         <span class="error invalid-feedback">{{ $errors->first('role') }}</span>
@@ -98,7 +98,7 @@
                     </div>
 
                     <div class="card-footer">
-                        {{ Form::submit('Guardar', ['class' => 'btn btn-success btn-sm']) }}
+                        {{ Form::submit(__('backstrap_laravel::administrators.edit.submit_button'), ['class' => 'btn btn-success btn-sm']) }}
                     </div>
 
                 {{ Form::close() }}
