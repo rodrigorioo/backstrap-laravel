@@ -25,7 +25,11 @@
     </button>
 
     <a class="navbar-brand" href="{{ url($templateConfiguration['prefix']) }}">
-        <b>{{ $templateConfiguration['title'] }}</b>
+        @if($templateConfiguration['logo'] != '')
+            <b>{{ $templateConfiguration['title'] }}</b>
+        @elseif($templateConfiguration['logo_img'] != '')
+            <img src="{{ $templateConfiguration['logo_img'] }}" class="img-fluid" style="max-height: 75px">
+        @endif
     </a>
 
     <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show"><span class="navbar-toggler-icon"></span></button>

@@ -23,6 +23,8 @@ class BackStrapLaravelService {
         return [
             'prefix' => config('backstrap_laravel.prefix'),
             'title' => config('backstrap_laravel.title'),
+            'logo' => config('backstrap_laravel.logo'),
+            'logo_img' => config('backstrap_laravel.logo_img'),
             'background_color_header' => ($backgroundColorHeader != '') ? 'background-color: '.$backgroundColorHeader.'!important' : '',
             'menu' => Builder::getMenu(),
             'meta_tags' => self::getMetaTags(),
