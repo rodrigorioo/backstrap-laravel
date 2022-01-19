@@ -76,9 +76,20 @@ class CRUDRequest extends FormRequest
         return parent::messages();
     }
 
-//    protected function prepareForValidation() {
-//
-//    }
+    protected function prepareForValidation() {
+
+        foreach($this->validation as $attributeName => $dataAttribute) {
+
+            if(isset($dataAttribute['prepare'])) {
+
+                // Prepare attribute for validation
+                if($this->{$attributeName} != '') {
+                    $this->merge([$attributeName => $dataAttribute['prepare']['default_value']]);
+                }
+            }
+        }
+
+    }
 
 
 
