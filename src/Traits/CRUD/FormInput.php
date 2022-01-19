@@ -179,6 +179,14 @@ trait FormInput {
 
             default:
 
+                $value = null;
+                if($model !== null) {
+                    $value = $model->{$inputName};
+                }
+
+                $returnInput = FormFacade::label($inputName, $inputData['name']);
+                $returnInput .= FormFacade::{$inputData['type']}($inputName, $value, $inputExtraData);
+
                 break;
 
         }
