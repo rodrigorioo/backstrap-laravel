@@ -83,7 +83,7 @@ class CRUDRequest extends FormRequest
             if(isset($dataAttribute['prepare'])) {
 
                 // Prepare attribute for validation
-                if($this->{$attributeName} != '') {
+                if($this->{$attributeName} == '') {
                     $this->merge([$attributeName => $dataAttribute['prepare']['default_value']]);
                 }
             }
