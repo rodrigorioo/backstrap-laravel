@@ -3,15 +3,15 @@
 namespace Rodrigorioo\BackStrapLaravel;
 
 use Illuminate\Support\Facades\Auth;
+use Rodrigorioo\BackStrapLaravel\CRUD\Traits\FormInput;
 use Rodrigorioo\BackStrapLaravel\Menu\Builder;
 use Rodrigorioo\BackStrapLaravel\Traits\Assets;
 use Rodrigorioo\BackStrapLaravel\Traits\Breadcrumbs;
-use Rodrigorioo\BackStrapLaravel\Traits\CRUD\FormInput;
 use Rodrigorioo\BackStrapLaravel\Traits\URL;
 
 class BackStrapLaravelService {
 
-    use Assets, Breadcrumbs, URL, FormInput;
+    use Assets, Breadcrumbs, URL;
 
     public static function getTemplateConfiguration(array $configuration = []) : array {
 

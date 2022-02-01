@@ -1,6 +1,6 @@
 <?php
 
-namespace Rodrigorioo\BackStrapLaravel\Traits\CRUD;
+namespace Rodrigorioo\BackStrapLaravel\CRUD\Traits;
 
 trait Cards {
 

@@ -1,9 +1,10 @@
 <?php
 
-namespace Rodrigorioo\BackStrapLaravel\Traits\CRUD;
+namespace Rodrigorioo\BackStrapLaravel\CRUD\Traits;
 
 use Collective\Html\FormFacade;
 use Illuminate\Support\Facades\Route;
+use function Rodrigorioo\BackStrapLaravel\Traits\CRUD\asset;
 
 trait FormInput {
 

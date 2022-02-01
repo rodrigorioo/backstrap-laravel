@@ -1,29 +1,41 @@
 <?php
 
-namespace Rodrigorioo\BackStrapLaravel\Http\Controllers;
+namespace Rodrigorioo\BackStrapLaravel\CRUD\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Rodrigorioo\BackStrapLaravel\Http\Requests\CRUD\CRUDRequest;
-use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Buttons;
-use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Cards;
-use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Columns;
-use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Fields;
-use Rodrigorioo\BackStrapLaravel\Traits\CRUD\Validation;
+use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Buttons;
+use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Cards;
+use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Columns;
+use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Fields;
+use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Validations;
+use Rodrigorioo\BackStrapLaravel\Http\Controllers\Controller;
+use Rodrigorioo\BackStrapLaravel\CRUD\Http\Requests\CRUDRequest;
 use Yajra\DataTables\Facades\DataTables;
 
 abstract class CRUDController extends Controller
 {
-    use Columns, Buttons, Fields, Cards, Validation;
+    use Columns, Buttons, Fields, Cards, Validations;
 
     protected $model = null;
     protected $modelClass = null;
     protected string $modelName = '';
     protected string $modelNamePlural = '';
     protected array $parameters = [];
+
+    // CRUD attributes
+    /**
+     * @var array
+     *
+     */
+    protected $fields = [];
+
+    /**
+     * @var array
+     */
+    protected array $validations = [];
 
     public function __construct () {
 
@@ -40,20 +52,20 @@ abstract class CRUDController extends Controller
 
         $this->modelClass = new $this->model;
 
+        // Fields
+        $this->addFieldsFromDB($this->modelClass);
+
+        // Validations
+        $this->addValidationsFromDB($this->modelClass);
+
         // COLUMNS
         $this::addColumnsFromDB($this->modelClass);
-
-        // FIELDS
-        $this::addFieldsFromDB($this->modelClass);
-
-        // VALIDATIONS
-        $this::addValidationsFromDB($this->modelClass);
 
         // ROUTE PARAMETERS
         $this::setRouteParameters();
 
         // SETUP
-        $this->setup();
+        // $this->setup();
 
     }
 
@@ -275,12 +287,15 @@ abstract class CRUDController extends Controller
      */
     public function create()
     {
+        // Setup
+        $this->setupCreate();
+
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
                 'urlStore' => $this->getUrl('store'),
                 'urlIndex' => $this->getUrl('index'),
-                'cards' => $this::getCards($this::getFields()),
-                'fieldsWithoutInput' => $this::getFieldsWithoutInput(),
+                'cards' => $this->getCards(),
+                'fields' => $this->getFields(),
             ]),
         );
     }
@@ -293,9 +308,12 @@ abstract class CRUDController extends Controller
      */
     public function store(Request $request)
     {
-        $request = app(CRUDRequest::class, ['validation' => $this::getValidationCreate()]);
+        // Setup
+        $this->setupCreate();
 
-        $fields = $this::getFields();
+        $request = app(CRUDRequest::class, ['validations' => $this->getValidations()]);
+
+        $fields = $this->getFields();
 
         $model = new $this->model;
         $model = $this->loadDataToModel($model, $fields, $request);
@@ -337,6 +355,14 @@ abstract class CRUDController extends Controller
     public function edit($id)
     {
         $model = $this->model::findOrFail($id);
+
+        // FIELDS
+        $this->addFieldsFromDB($this->modelClass);
+
+        // VALIDATIONS
+        $this::addValidationsFromDB($this->modelClass);
+
+        $this->setupEdit();
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
@@ -412,30 +438,32 @@ abstract class CRUDController extends Controller
 
     private function loadDataToModel($model, $fields, Request $request) {
 
-        foreach($fields as $nameField => $fieldData) {
+        foreach($fields as $fieldName => $field) {
 
-            switch($fieldData['type']) {
+            $model->{$fieldName} = $field->getValue($request);
 
-                case 'image':
-                case 'file':
-
-                    if($request->file($nameField)) {
-
-                        $uploadFile = config('backstrap_laravel.upload_file');
-                        $file = $request->file($nameField);
-
-                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
-
-                        $model->{$nameField} = $fileUrl;
-                    }
-
-                    break;
-
-                default:
-
-                    $model->{$nameField} = $request->{$nameField};
-                    break;
-            }
+//            switch($fieldData['type']) {
+//
+//                case 'image':
+//                case 'file':
+//
+//                    if($request->file($nameField)) {
+//
+//                        $uploadFile = config('backstrap_laravel.upload_file');
+//                        $file = $request->file($nameField);
+//
+//                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
+//
+//                        $model->{$nameField} = $fileUrl;
+//                    }
+//
+//                    break;
+//
+//                default:
+//
+//                    $model->{$nameField} = $request->{$nameField};
+//                    break;
+//            }
 
         }
 
@@ -447,5 +475,7 @@ abstract class CRUDController extends Controller
     }
 
     // SETUPS
-    abstract public function setup ();
+    abstract public function setupIndex ();
+    abstract public function setupCreate ();
+    abstract public function setupEdit ();
 }
