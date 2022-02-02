@@ -3,28 +3,17 @@
 namespace Rodrigorioo\BackStrapLaravel\CRUD\Traits;
 
 use Illuminate\Support\Facades\Schema;
+use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Column;
 
 trait Columns {
 
-    protected static $columns = [];
-
-    public static function addColumn ($columnName, $data) {
-
-        $name = ucwords(str_replace('_', ' ', $columnName));
-        if(!array_key_exists('name', $data)) {
-            $data['name'] = $name;
-        }
-
-        self::$columns[$columnName] = $data;
+    public function getColumns (): array {
+        return $this->columns;
     }
 
-    public static function getColumns (): array {
-        return self::$columns;
-    }
+    public function setColumns ($setColumns) {
 
-    public static function setColumns ($setColumns) {
-
-        $columns = self::$columns;
+        $columns = $this->getColumns();
 
         foreach($setColumns as $setColumnName => $setColumn) {
 
@@ -37,10 +26,24 @@ trait Columns {
 
         }
 
-        self::$columns = $columns;
+        $this->columns = $columns;
     }
 
-    public static function addColumnsFromDB ($modelClass) {
+    public function deleteColumn($columnName) {
+        unset($this->columns[$columnName]);
+    }
+
+    public function addColumn ($columnName, $type) {
+
+        $name = ucwords(str_replace('_', ' ', $columnName));
+//        if(!array_key_exists('name', $data)) {
+//            $data['name'] = $name;
+//        }
+
+        $this->columns[$columnName] = new Column($columnName, $name, $type);
+    }
+
+    public function addColumnsFromDB ($modelClass) {
 
         $table = $modelClass->getTable();
 
@@ -50,17 +53,12 @@ trait Columns {
 
             $type = 'text';
 
-            if($columnDB == 'updated_at') continue;
+            if(in_array($columnDB, ['deleted_at', 'updated_at'])) continue;
+
             if($columnDB == 'created_at') $type = 'datetime';
 
-            self::addColumn($columnDB, [
-                'type' => $type,
-            ]);
+            $this->addColumn($columnDB, $type);
         }
-    }
-
-    public static function deleteColumn($columnName) {
-        unset(self::$columns[$columnName]);
     }
 
 }

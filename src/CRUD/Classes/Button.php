@@ -4,18 +4,68 @@ namespace Rodrigorioo\BackStrapLaravel\CRUD\Classes;
 
 class Button {
 
+    private string $name = '';
     private string $url = '';
     private string $classes = '';
     private string $text = '';
 
-    public function __construct ($url, $classes, $text) {
+    public function __construct ($name, $url, $classes, $text) {
+        $this->setName($name);
         $this->setUrl($url);
         $this->setClasses($classes);
         $this->setText($text);
     }
 
-    public function render () {
+    public function render ($url = '') {
 
+        $html = '';
+
+        // Hardcoded buttons
+
+        switch($this->getName()) {
+
+            case 'edit_button':
+
+                $html = '<a href="'.$url.'" class="'.$this->getClasses().'">'.$this->getText().'</a>';
+                break;
+
+            case 'delete_button':
+
+                $html = '
+            <form method="POST" action="'.$url.'" class="mr-1">
+                '.csrf_field().'
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="'.$this->getClasses().'" onclick="return confirm(\'Está seguro que desea realizar esta acción?\')">
+                    '.$this->getText().'
+                </button>
+            </form>
+            ';
+
+                break;
+
+            default:
+
+                $html = '<a href="'.$this->getUrl().'" class="'.$this->getClasses().'">'.$this->getText().'</a>';
+                break;
+        }
+
+        return $html;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 
     /**
@@ -64,5 +114,21 @@ class Button {
     public function setText(string $text): void
     {
         $this->text = $text;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForm(): bool
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param bool $form
+     */
+    public function setForm(bool $form): void
+    {
+        $this->form = $form;
     }
 }

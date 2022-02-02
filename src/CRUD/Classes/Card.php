@@ -22,8 +22,6 @@ class Card {
 
     }
 
-
-
     /**
      * @return string
      */

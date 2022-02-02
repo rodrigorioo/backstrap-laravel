@@ -30,42 +30,55 @@
                 </div>
                 <div class="card-body">
 
-                    @foreach($cards as $cardId => $cardData)
-                        <div class="card {{ $cardData['card_class'] }}">
-                            <div class="card-header {{ $cardData['header_class'] }}">
-                                <strong>{{ $cardData['name'] }}</strong>
-                            </div>
-                            <div class="card-body {{ $cardData['body_class'] }}">
+{{--                    @foreach($cards as $cardId => $cardData)--}}
+{{--                        <div class="card {{ $cardData['card_class'] }}">--}}
+{{--                            <div class="card-header {{ $cardData['header_class'] }}">--}}
+{{--                                <strong>{{ $cardData['name'] }}</strong>--}}
+{{--                            </div>--}}
+{{--                            <div class="card-body {{ $cardData['body_class'] }}">--}}
 
-                                @foreach($cardData['fields'] as $fieldName => $fieldData)
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors, $model) !!}
+{{--                                @foreach($cardData['fields'] as $fieldName => $fieldData)--}}
+{{--                                    <div class="row">--}}
+{{--                                        <div class="col-sm-12">--}}
+{{--                                            <div class="form-group">--}}
+{{--                                                {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors, $model) !!}--}}
 
-                                                {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}
-                                            </div>
-                                        </div>
+{{--                                                {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endforeach--}}
+
+{{--                            </div>--}}
+{{--                            <div class="card-footer">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    @endforeach--}}
+
+{{--                    @foreach($fieldsWithoutInput as $fieldName => $fieldData)--}}
+{{--                        <div class="row">--}}
+{{--                            <div class="col-sm-12">--}}
+{{--                                <div class="form-group">--}}
+{{--                                    {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors, $model) !!}--}}
+
+{{--                                    {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    @endforeach--}}
+
+                        @foreach($fields as $field)
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        {!! $field->render($errors, $model) !!}
+                                        {{--                                        {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors) !!}--}}
+
+                                        {{--                                        {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}--}}
                                     </div>
-                                @endforeach
-
-                            </div>
-                            <div class="card-footer">
-                            </div>
-                        </div>
-                    @endforeach
-
-                    @foreach($fieldsWithoutInput as $fieldName => $fieldData)
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors, $model) !!}
-
-                                    {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
 
                 </div>
                 <div class="card-footer">

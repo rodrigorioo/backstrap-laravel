@@ -26,6 +26,17 @@ abstract class CRUDController extends Controller
     protected array $parameters = [];
 
     // CRUD attributes
+
+    /**
+     * @var array
+     */
+    protected $columns = [];
+
+    /**
+     * @var array
+     */
+    protected $buttons = [];
+
     /**
      * @var array
      *
@@ -58,13 +69,16 @@ abstract class CRUDController extends Controller
         // Validations
         $this->addValidationsFromDB($this->modelClass);
 
-        // COLUMNS
-        $this::addColumnsFromDB($this->modelClass);
+        // Columns
+        $this->addColumnsFromDB($this->modelClass);
 
-        // ROUTE PARAMETERS
-        $this::setRouteParameters();
+        // Buttons
+        $this->addDefaultButtons();
 
-        // SETUP
+        // Route parameters
+        $this->setRouteParameters();
+
+        // Setup
         // $this->setup();
 
     }
@@ -119,135 +133,97 @@ abstract class CRUDController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
 
+            // Columns
             $rawColumns = ['actions'];
-            // $elements = $this->model::latest()->get();
+            $columns = $this->getColumns();
+
+            // Get elements
             $elements = $this->queryGetModels()->get();
+
             $datatables = DataTables::of($elements);
 
-            $columns = $this::getColumns();
             foreach($columns as $columnName => $column) {
 
-                // SET RAWCOLUMNS
-                switch($column['type']) {
-                    case 'image':
-
-                        $rawColumns[] = $columnName;
-                        break;
+                // Set rawcolumns
+                if(in_array($column->getType(), ['image'])) {
+                    $rawColumns[] = $columnName;
                 }
 
                 $datatables->addColumn($columnName, function($element) use($columnName, $column, &$rawColumns) {
 
                     $value = $element->{$columnName};
-                    $returnValue = null;
 
-                     switch($column['type']) {
-
-                         case 'text':
-
-                             $returnValue = $value;
-                             break;
-
-                         case 'datetime':
-
-                             $returnValue = Carbon::parse($value)->format('d/m/Y H:i:s');
-                             break;
-
-                         case 'date':
-
-                             $returnValue = Carbon::parse($value)->format('d/m/Y');
-                             break;
-
-                         case 'image':
-
-                             $returnValue = '<img src="'.asset($value).'" class="img-fluid" style="max-height: 35px;">';
-                             break;
-                     }
-
-                     return $returnValue;
+                    return $column->parseValue($value);
                 });
             }
 
-            $buttons = $this::getButtons();
-            $datatables->addColumn('actions', function($element) use($buttons) {
+            $datatables->addColumn('actions', function($element) {
 
                 $actions = '<div class="d-flex align-items-center">';
 
-                foreach($buttons as $buttonName => $button) {
+                foreach($this->getButtons() as $buttonName => $button) {
 
-                    switch($buttonName) {
+//                    switch($buttonName) {
+//
+//                        default:
+//
+//                            $text = $button['text'];
+//                            $classes = $button['classes'];
+//                            $link = $button['link'];
+//
+//                            $html = '';
+//
+//                            if($link) {
+//
+//                                $urlLink = '';
+//
+//                                if(is_array($link)) {
+//                                    self::addButton($buttonName, [
+//                                        'html' => '',
+//                                        'link' => $link,
+//                                    ]);
+//
+//                                    $buttonLink = $button['link'];
+//
+//                                    switch($buttonLink['type']) {
+//
+//                                        case 'action':
+//
+//                                            $dataLink = [];
+//
+//                                            if(isset($buttonLink['model']) && $buttonLink['model']) {
+//                                                $dataLink[] = $element;
+//                                            }
+//
+//                                            $urlLink = action($buttonLink['url'], $dataLink);
+//
+//                                            break;
+//                                    }
+//
+//                                } else {
+//                                    $urlLink = $link;
+//                                }
+//
+//                                $html .= '<a href="'.$urlLink.'">';
+//                            }
+//
+//                            $html .= '<button type="button" class="btn '.$classes.' mr-2 btn--'.$buttonName.'">'.$text.'</button>';
+//
+//                            if($link) {
+//                                $html .= '</a>';
+//                            }
+//
+//                            $button['html'] = $html;
+//
+//                            break;
+//                    }
 
-                        case 'edit_button':
+//                    $actions .= $button['html'];
 
-                            $button['html'] = '<a href="'.$this->getUrl('edit', $element->id).'" class="btn btn-success btn-sm mr-1">Editar</a>';
-                            break;
-
-                        case 'delete_button':
-
-                            $button['html'] = '<form method="POST" action="'.$this->getUrl('destroy', $element->id).'" class="mr-1">
-                                '.csrf_field().'
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="delete btn btn-danger btn-sm" onclick="return confirm(\'Está seguro que desea eliminar este proyecto?\')">
-                                Borrar
-                                </button>
-                                </form>';
-                            break;
-
-                        default:
-
-                            $text = $button['text'];
-                            $classes = $button['classes'];
-                            $link = $button['link'];
-
-                            $html = '';
-
-                            if($link) {
-
-                                $urlLink = '';
-
-                                if(is_array($link)) {
-                                    self::addButton($buttonName, [
-                                        'html' => '',
-                                        'link' => $link,
-                                    ]);
-
-                                    $buttonLink = $button['link'];
-
-                                    switch($buttonLink['type']) {
-
-                                        case 'action':
-
-                                            $dataLink = [];
-
-                                            if(isset($buttonLink['model']) && $buttonLink['model']) {
-                                                $dataLink[] = $element;
-                                            }
-
-                                            $urlLink = action($buttonLink['url'], $dataLink);
-
-                                            break;
-                                    }
-
-                                } else {
-                                    $urlLink = $link;
-                                }
-
-                                $html .= '<a href="'.$urlLink.'">';
-                            }
-
-                            $html .= '<button type="button" class="btn '.$classes.' mr-2 btn--'.$buttonName.'">'.$text.'</button>';
-
-                            if($link) {
-                                $html .= '</a>';
-                            }
-
-                            $button['html'] = $html;
-
-                            break;
-                    }
-
-                    $actions .= $button['html'];
+                    $actions .= $button->render();
                 }
 
                 $actions .= '</div>';
@@ -259,15 +235,14 @@ abstract class CRUDController extends Controller
                 ->make(true);
         }
 
-        // GET COLUMNS NAMES
+        // Get column names
         $columnsTable = [];
-        $columns = $this::getColumns();
-        foreach($columns as $columnName => $column) {
+        $columns = $this->getColumns();
 
-            $columnName = $column['name'];
-
-            $columnsTable[] = $columnName;
+        foreach($columns as $column) {
+            $columnsTable[] = $column->getName();
         }
+
         $columnsTable[] = '';
 
         return view('backstrap_laravel::admin.crud.index')->with(
@@ -356,20 +331,15 @@ abstract class CRUDController extends Controller
     {
         $model = $this->model::findOrFail($id);
 
-        // FIELDS
-        $this->addFieldsFromDB($this->modelClass);
-
-        // VALIDATIONS
-        $this::addValidationsFromDB($this->modelClass);
-
+        // Setup
         $this->setupEdit();
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
                 'urlUpdate' => $this->getUrl('update', $id),
                 'urlIndex' => $this->getUrl('index'),
-                'cards' => $this::getCards($this::getFields()),
-                'fieldsWithoutInput' => $this::getFieldsWithoutInput(),
+                'cards' => $this->getCards(),
+                'fields' => $this->getFields(),
                 'model' => $model,
             ]),
         );
