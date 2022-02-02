@@ -44,7 +44,7 @@ class Field
 
     }
 
-    public function getValue (Request $request) {
+    public function getValue (Request $request, $defaultValue = null) {
         return $request->{$this->getFieldName()};
     }
 

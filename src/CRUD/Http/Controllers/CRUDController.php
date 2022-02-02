@@ -377,7 +377,7 @@ abstract class CRUDController extends Controller
 
         foreach($fields as $fieldName => $field) {
 
-            $model->{$fieldName} = $field->getValue($request);
+            $model->{$fieldName} = $field->getValue($request, $model->{$fieldName});
 
 //            switch($fieldData['type']) {
 //

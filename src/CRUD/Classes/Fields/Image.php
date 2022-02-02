@@ -30,7 +30,7 @@ class Image extends Field {
         return $returnInput;
     }
 
-    public function getValue(Request $request) {
+    public function getValue(Request $request, $defaultValue = null) {
 
         $value = null;
 
@@ -42,6 +42,8 @@ class Image extends Field {
             $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->getFieldName()), 'backstrap_laravel');
 
             $value = $fileUrl;
+        } else {
+            $value = $defaultValue;
         }
 
         return $value;
