@@ -1,6 +1,6 @@
 <?php
 
-namespace Rodrigorioo\BackStrapLaravel\CRUD\Classes\Fields;
+namespace Rodrigorioo\BackStrapLaravel\CRUD\Classes;
 
 use Illuminate\Http\Request;
 
@@ -38,12 +38,14 @@ class Field
         return $inputExtraData;
     }
 
-    public function getValue (Request $request) {
-        return $request->{$this->getFieldName()};
-    }
+    // Override functions
 
     public function render ($errors, $model = null) {
 
+    }
+
+    public function getValue (Request $request) {
+        return $request->{$this->getFieldName()};
     }
 
     public function getFieldClass () : string {

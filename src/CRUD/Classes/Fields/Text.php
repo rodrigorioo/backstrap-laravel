@@ -3,6 +3,7 @@
 namespace Rodrigorioo\BackStrapLaravel\CRUD\Classes\Fields;
 
 use Collective\Html\FormFacade;
+use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Field;
 
 class Text extends Field {
 

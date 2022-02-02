@@ -134,6 +134,9 @@ abstract class CRUDController extends Controller
     public function index(Request $request)
     {
 
+        // Setup
+        $this->setupIndex();
+
         $columns = $this->getColumns();
 
         if ($request->ajax()) {
@@ -316,11 +319,10 @@ abstract class CRUDController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         // Setup
         $this->setupEdit();
 
-        $request = app(CRUDRequest::class, ['validation' => $this->getValidations()]);
+        $request = app(CRUDRequest::class, ['validations' => $this->getValidations()]);
 
         $fields = $this->getFields();
 

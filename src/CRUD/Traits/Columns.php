@@ -20,8 +20,17 @@ trait Columns {
             if(isset($columns[$setColumnName])) {
 
                 foreach($setColumn as $dataName => $dataValue) {
-                    $columns[$setColumnName][$dataName] = $dataValue;
+
+                    switch($dataName) {
+                        case 'type': $columns[$setColumnName]->setType($dataValue); break;
+                    }
                 }
+
+            } else {
+                $columns[] = $this->createColumnClass(
+                    $setColumnName,
+                    $setColumn['type'],
+                );
             }
 
         }
@@ -33,14 +42,15 @@ trait Columns {
         unset($this->columns[$columnName]);
     }
 
-    public function addColumn ($columnName, $type) {
-
+    public function createColumnClass ($columnName, $type) {
         $name = ucwords(str_replace('_', ' ', $columnName));
-//        if(!array_key_exists('name', $data)) {
-//            $data['name'] = $name;
-//        }
 
-        $this->columns[$columnName] = new Column($columnName, $name, $type);
+        return new Column($columnName, $name, $type);
+    }
+
+    public function createColumn ($columnName, $type) {
+
+        $this->columns[$columnName] = $this->createColumnClass($columnName, $type);
     }
 
     public function addColumnsFromDB ($modelClass) {
@@ -57,7 +67,7 @@ trait Columns {
 
             if($columnDB == 'created_at') $type = 'datetime';
 
-            $this->addColumn($columnDB, $type);
+            $this->createColumn($columnDB, $type);
         }
     }
 

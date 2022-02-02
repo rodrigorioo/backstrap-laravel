@@ -11,18 +11,32 @@ trait Validations {
         return $this->validations;
     }
 
-    public function setValidations ($type, $setValidations) {
+    public function setValidations ($setValidations) {
 
         $validations = $this->getValidations();
 
         foreach($setValidations as $setValidationName => $setValidation) {
 
-            if(array_key_exists($setValidationName, $validations)) {
+            if(isset($validations[$setValidationName])) {
 
                 foreach($setValidation as $dataName => $dataValue) {
-                    $validations[$setValidationName][$dataName] = $dataValue;
+
+                    switch($dataName) {
+                        case 'rules': $validations[$setValidationName]->setRules($dataValue); break;
+                        case 'attribute': $validations[$setValidationName]->setAttribute($dataValue); break;
+                        case 'messages': $validations[$setValidationName]->setMessages($dataValue); break;
+                        case 'prepare': $validations[$setValidationName]->setPrepare($dataValue); break;
+                    }
                 }
 
+            } else {
+                $validations[] = $this->createValidationClass(
+                    $setValidationName,
+                    $setValidation['rules'],
+                    $setValidation['attribute'],
+                    (isset($setValidation['messages'])) ? $setValidation['messages'] : [],
+                    (isset($setValidation['prepare'])) ? $setValidation['prepare'] : null,
+                );
             }
 
         }
@@ -34,12 +48,12 @@ trait Validations {
         unset($this->validations[$fieldName]);
     }
 
-    public function createValidation($fieldName, $rules, $attribute, $messages = []) {
+    public function createValidationClass ($fieldName, $rules, $attribute, $messages = [], $prepare = null) {
+        return new Validation($fieldName, $rules, $attribute, $messages, $prepare);
+    }
 
-        // $this->validations[$fieldName]['rules'] = $fieldValidation;
-        // $this->validations[$fieldName] = array_merge(self::$validationCreate[$fieldName], $extras);
-
-        $this->validations[$fieldName] = new Validation($fieldName, $rules, $attribute, $messages);
+    public function createValidation($fieldName, $rules, $attribute, $messages = [], $prepare = null) {
+        $this->validations[$fieldName] = $this->createValidationClass($fieldName, $rules, $attribute, $messages = [], $prepare = null);
     }
 
     public function addValidationsFromDB ($modelClass) {

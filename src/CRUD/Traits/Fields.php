@@ -19,8 +19,29 @@ trait Fields {
             if(isset($fields[$setFieldName])) {
 
                 foreach($setField as $dataName => $dataValue) {
-                    $fields[$setFieldName][$dataName] = $dataValue;
+
+                    switch($dataName) {
+
+                        case 'type':
+                            $actualField = $fields[$setFieldName];
+
+                            $fields[$setFieldName] = $this->createFieldClass($setFieldName, $dataValue, $actualField->getClasses(), $actualField->getData());
+
+                            break;
+
+                        case 'classes': $fields[$setFieldName]->setClasses($dataValue); break;
+
+                        case 'data': $fields[$setFieldName]->setData($dataValue); break;
+                    }
                 }
+
+            } else {
+                $fields[] = $this->createFieldClass(
+                    $setFieldName,
+                    $setField['type'],
+                    (isset($setField['classes'])) ? $setField['classes'] : '',
+                    (isset($setField['data'])) ? $setField['data'] : [],
+                );
             }
 
         }
@@ -32,12 +53,16 @@ trait Fields {
         unset($this->fields[$fieldName]);
     }
 
-    public function createField (string $fieldName, string $type, string $classes = '', array $data = []) {
+    public function createFieldClass (string $fieldName, string $type, string $classes = '', array $data = []) {
 
         $name = ucwords(str_replace('_', ' ', $fieldName));
         $typeClass = 'Rodrigorioo\BackStrapLaravel\CRUD\Classes\Fields\\'.ucwords($type);
 
-        $this->fields[$fieldName] = new $typeClass($fieldName, $name, $classes, $data);
+        return new $typeClass($fieldName, $name, $classes, $data);
+    }
+
+    public function createField (string $fieldName, string $type, string $classes = '', array $data = []) {
+        $this->fields[$fieldName] = $this->createFieldClass($fieldName, $type, $classes, $data);
     }
 
     public function addFieldsFromDB ($modelClass) {
