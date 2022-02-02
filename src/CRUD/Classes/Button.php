@@ -16,23 +16,18 @@ class Button {
         $this->setText($text);
     }
 
-    public function render ($url = '') {
+    public function render () {
 
         $html = '';
 
+        // TODO: Refactor and optimize this
         // Hardcoded buttons
-
         switch($this->getName()) {
-
-            case 'edit_button':
-
-                $html = '<a href="'.$url.'" class="'.$this->getClasses().'">'.$this->getText().'</a>';
-                break;
 
             case 'delete_button':
 
                 $html = '
-            <form method="POST" action="'.$url.'" class="mr-1">
+            <form method="POST" action="'.$this->getUrl().'" class="mr-1">
                 '.csrf_field().'
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="'.$this->getClasses().'" onclick="return confirm(\'Está seguro que desea realizar esta acción?\')">

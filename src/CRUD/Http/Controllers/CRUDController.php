@@ -134,11 +134,12 @@ abstract class CRUDController extends Controller
     public function index(Request $request)
     {
 
+        $columns = $this->getColumns();
+
         if ($request->ajax()) {
 
-            // Columns
+            // Raw columns
             $rawColumns = ['actions'];
-            $columns = $this->getColumns();
 
             // Get elements
             $elements = $this->queryGetModels()->get();
@@ -152,6 +153,7 @@ abstract class CRUDController extends Controller
                     $rawColumns[] = $columnName;
                 }
 
+                // Set all columns
                 $datatables->addColumn($columnName, function($element) use($columnName, $column, &$rawColumns) {
 
                     $value = $element->{$columnName};
@@ -166,62 +168,23 @@ abstract class CRUDController extends Controller
 
                 foreach($this->getButtons() as $buttonName => $button) {
 
-//                    switch($buttonName) {
-//
-//                        default:
-//
-//                            $text = $button['text'];
-//                            $classes = $button['classes'];
-//                            $link = $button['link'];
-//
-//                            $html = '';
-//
-//                            if($link) {
-//
-//                                $urlLink = '';
-//
-//                                if(is_array($link)) {
-//                                    self::addButton($buttonName, [
-//                                        'html' => '',
-//                                        'link' => $link,
-//                                    ]);
-//
-//                                    $buttonLink = $button['link'];
-//
-//                                    switch($buttonLink['type']) {
-//
-//                                        case 'action':
-//
-//                                            $dataLink = [];
-//
-//                                            if(isset($buttonLink['model']) && $buttonLink['model']) {
-//                                                $dataLink[] = $element;
-//                                            }
-//
-//                                            $urlLink = action($buttonLink['url'], $dataLink);
-//
-//                                            break;
-//                                    }
-//
-//                                } else {
-//                                    $urlLink = $link;
-//                                }
-//
-//                                $html .= '<a href="'.$urlLink.'">';
-//                            }
-//
-//                            $html .= '<button type="button" class="btn '.$classes.' mr-2 btn--'.$buttonName.'">'.$text.'</button>';
-//
-//                            if($link) {
-//                                $html .= '</a>';
-//                            }
-//
-//                            $button['html'] = $html;
-//
-//                            break;
-//                    }
+                    // TODO: Refactor and optimize this
+                    // Hardcoded buttons
+                    switch($buttonName) {
 
-//                    $actions .= $button['html'];
+                        case 'edit_button':
+                            $this->editButton($buttonName, [
+                                'link' => $this->getUrl('edit', $element->id)
+                            ]);
+                            break;
+
+                        case 'delete_button':
+                            $this->editButton($buttonName, [
+                                'link' => $this->getUrl('destroy', $element->id)
+                            ]);
+
+                            break;
+                    }
 
                     $actions .= $button->render();
                 }
@@ -237,7 +200,6 @@ abstract class CRUDController extends Controller
 
         // Get column names
         $columnsTable = [];
-        $columns = $this->getColumns();
 
         foreach($columns as $column) {
             $columnsTable[] = $column->getName();
@@ -355,9 +317,12 @@ abstract class CRUDController extends Controller
     public function update(Request $request, $id)
     {
 
-        $request = app(CRUDRequest::class, ['validation' => $this::getValidationEdit()]);
+        // Setup
+        $this->setupEdit();
 
-        $fields = $this::getFields();
+        $request = app(CRUDRequest::class, ['validation' => $this->getValidations()]);
+
+        $fields = $this->getFields();
 
         $model = $this->model::findOrFail($id);
         $model = $this->loadDataToModel($model, $fields, $request);
