@@ -89,7 +89,7 @@ abstract class CRUDController extends Controller
 
     }
 
-    public function setRouteParameters () {
+    private function setRouteParameters () {
         $parameters = Route::getCurrentRoute()->parameters;
         $this->parameters = $parameters;
     }
@@ -126,10 +126,22 @@ abstract class CRUDController extends Controller
         return $url;
     }
 
-    public function viewData () {
+    private function viewData () {
         return [
             'modelNamePlural' => $this->modelNamePlural,
         ];
+    }
+
+    private function getAllFields () {
+
+        $cards = $this->getCards();
+        $fields = $this->getFields();
+
+        foreach($cards as $card) {
+            $fields = array_merge($fields, $card->getFields());
+        }
+
+        return $fields;
     }
 
     /**
@@ -214,6 +226,7 @@ abstract class CRUDController extends Controller
             $columnsTable[] = $column->getName();
         }
 
+        // The last is for action column
         $columnsTable[] = '';
 
         return view('backstrap_laravel::admin.crud.index')->with(
@@ -257,10 +270,13 @@ abstract class CRUDController extends Controller
         // Setup
         $this->setupCreate();
 
+        // Make validation request
         $request = app(CRUDRequest::class, ['validations' => $this->getValidations()]);
 
-        $fields = $this->getFields();
+        // Get all fields (included card fields)
+        $fields = $this->getAllFields();
 
+        // Create model
         $model = new $this->model;
         $model = $this->loadDataToModel($model, $fields, $request);
 
@@ -328,10 +344,13 @@ abstract class CRUDController extends Controller
         // Setup
         $this->setupEdit();
 
+        // Make validation request
         $request = app(CRUDRequest::class, ['validations' => $this->getValidations()]);
 
-        $fields = $this->getFields();
+        // Get all fields (included card fields)
+        $fields = $this->getAllFields();
 
+        // Update model
         $model = $this->model::findOrFail($id);
         $model = $this->loadDataToModel($model, $fields, $request);
 

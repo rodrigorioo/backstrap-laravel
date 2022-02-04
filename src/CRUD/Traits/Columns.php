@@ -11,7 +11,7 @@ trait Columns {
         return $this->columns;
     }
 
-    public function setColumns ($setColumns) {
+    public function setColumns (array $setColumns) : void {
 
         $columns = $this->getColumns();
 
@@ -27,7 +27,7 @@ trait Columns {
                 }
 
             } else {
-                $columns[] = $this->createColumnClass(
+                $columns[$setColumnName] = $this->createColumnClass(
                     $setColumnName,
                     $setColumn['type'],
                 );
@@ -38,17 +38,18 @@ trait Columns {
         $this->columns = $columns;
     }
 
-    public function deleteColumn($columnName) {
+    public function deleteColumn(string $columnName) {
         unset($this->columns[$columnName]);
     }
 
-    public function createColumnClass ($columnName, $type) {
+    public function createColumnClass (string $columnName, string $type) : Column
+    {
         $name = ucwords(str_replace('_', ' ', $columnName));
 
         return new Column($columnName, $name, $type);
     }
 
-    public function createColumn ($columnName, $type) {
+    public function createColumn (string $columnName, string $type) {
 
         $this->columns[$columnName] = $this->createColumnClass($columnName, $type);
     }

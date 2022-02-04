@@ -30,7 +30,7 @@ trait Validations {
                 }
 
             } else {
-                $validations[] = $this->createValidationClass(
+                $validations[$setValidationName] = $this->createValidationClass(
                     $setValidationName,
                     $setValidation['rules'],
                     $setValidation['attribute'],

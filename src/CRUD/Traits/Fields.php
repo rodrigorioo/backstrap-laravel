@@ -10,7 +10,7 @@ trait Fields {
         return $this->fields;
     }
 
-    public function setFields ($setFields) : void {
+    public function setFields (array $setFields) : void {
 
         $fields = $this->getFields();
 
@@ -36,7 +36,7 @@ trait Fields {
                 }
 
             } else {
-                $fields[] = $this->createFieldClass(
+                $fields[$setFieldName] = $this->createFieldClass(
                     $setFieldName,
                     $setField['type'],
                     (isset($setField['classes'])) ? $setField['classes'] : '',
@@ -49,8 +49,26 @@ trait Fields {
         $this->fields = $fields;
     }
 
-    public function deleteField($fieldName) {
+    public function deleteField(string $fieldName) {
         unset($this->fields[$fieldName]);
+    }
+
+    public function moveFieldToCard(string $fieldName, string $cardId) {
+
+        // If exist the field and the card
+        if(isset($this->fields[$fieldName]) && isset($this->cards[$cardId])) {
+
+            // Get the field and deleted it from controller
+            $fieldToMove = $this->fields[$fieldName];
+            $this->deleteField($fieldName);
+
+            // Add it to card
+            $this->cards[$cardId]->addField($fieldToMove->getFieldName(), $fieldToMove);
+        }
+    }
+
+    public function addField (string $fieldName, $field) {
+        $this->fields[$fieldName] = $field;
     }
 
     public function createFieldClass (string $fieldName, string $type, string $classes = '', array $data = []) {
@@ -78,6 +96,5 @@ trait Fields {
             $this->createField($columnDB, 'text');
         }
     }
-
 
 }
