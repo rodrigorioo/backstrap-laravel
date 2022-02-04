@@ -30,39 +30,34 @@
                     </div>
                     <div class="card-body">
 
-{{--                        @foreach($cards as $cardId => $cardData)--}}
-{{--                            <div class="card {{ $cardData['card_class'] }}">--}}
-{{--                                <div class="card-header {{ $cardData['header_class'] }}">--}}
-{{--                                    <strong>{{ $cardData['name'] }}</strong>--}}
-{{--                                </div>--}}
-{{--                                <div class="card-body {{ $cardData['body_class'] }}">--}}
+                        @foreach($cards as $cardId => $card)
+                            <div class="card {{ $card->getCardClass() }}">
+                                <div class="card-header {{ $card->getHeaderClass() }}">
+                                    <strong>{{ $card->getName() }}</strong>
+                                </div>
+                                <div class="card-body {{ $card->getBodyClass() }}">
 
-{{--                                    @foreach($cardData['fields'] as $fieldName => $fieldData)--}}
-{{--                                        <div class="row">--}}
-{{--                                            <div class="col-sm-12">--}}
-{{--                                                <div class="form-group">--}}
-{{--                                                    {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors) !!}--}}
+                                    @foreach($card->getFields() as $field)
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    {!! $field->render($errors) !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
 
-{{--                                                    {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}--}}
-{{--                                                </div>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    @endforeach--}}
-
-{{--                                </div>--}}
-{{--                                <div class="card-footer">--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        @endforeach--}}
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        @endforeach
 
                         @foreach($fields as $field)
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         {!! $field->render($errors) !!}
-{{--                                        {!! BackStrapLaravel::getFormInput($fieldName, $fieldData, $errors) !!}--}}
-
-{{--                                        {!! BackStrapLaravel::getInputErrorMessage($errors, $fieldName, $fieldData) !!}--}}
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +74,7 @@
 
 @stop
 
-@section('js')
+@push('js')
 
     <script src="{{ asset("vendor/backstrap_laravel/ckeditor/ckeditor.js") }}"></script>
 
@@ -92,4 +87,4 @@
         });
     </script>
 
-@stop
+@endpush

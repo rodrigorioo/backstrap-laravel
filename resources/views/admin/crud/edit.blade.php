@@ -30,6 +30,29 @@
                 </div>
                 <div class="card-body">
 
+                    @foreach($cards as $cardId => $card)
+                        <div class="card {{ $card->getCardClass() }}">
+                            <div class="card-header {{ $card->getHeaderClass() }}">
+                                <strong>{{ $card->getName() }}</strong>
+                            </div>
+                            <div class="card-body {{ $card->getBodyClass() }}">
+
+                                @foreach($card->getFields() as $field)
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                {!! $field->render($errors, $model) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                            <div class="card-footer">
+                            </div>
+                        </div>
+                    @endforeach
+
 {{--                    @foreach($cards as $cardId => $cardData)--}}
 {{--                        <div class="card {{ $cardData['card_class'] }}">--}}
 {{--                            <div class="card-header {{ $cardData['header_class'] }}">--}}
