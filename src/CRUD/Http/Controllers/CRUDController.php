@@ -30,18 +30,24 @@ abstract class CRUDController extends Controller
     /**
      * @var array
      */
-    protected $columns = [];
+    protected array $columns = [];
 
     /**
      * @var array
      */
-    protected $buttons = [];
+    protected array $buttons = [];
 
     /**
      * @var array
      *
      */
-    protected $fields = [];
+    protected array $cards = [];
+
+    /**
+     * @var array
+     *
+     */
+    protected array $fields = [];
 
     /**
      * @var array
@@ -90,7 +96,7 @@ abstract class CRUDController extends Controller
 
     public function getUrl ($action, $id = null) {
 
-        // GET ROUTE PARAMETERS
+        // Get route parameters
         $parameters = [];
         foreach(Route::getCurrentRoute()->parameters as $nameParameter => $valueParameter) {
             $parameters[] = $valueParameter;
@@ -356,7 +362,7 @@ abstract class CRUDController extends Controller
     {
         $model = $this->model::findOrFail($id);
 
-        if ($model->save()) {
+        if ($model->delete()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
             return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
                 'title' => __('backstrap_laravel::alerts.success.title'),
