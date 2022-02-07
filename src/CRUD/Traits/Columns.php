@@ -38,8 +38,10 @@ trait Columns {
         $this->columns = $columns;
     }
 
-    public function deleteColumn(string $columnName) {
-        unset($this->columns[$columnName]);
+    public function deleteColumn(string ...$columnNames) {
+        foreach($columnNames as $columnName) {
+            unset($this->columns[$columnName]);
+        }
     }
 
     public function createColumnClass (string $columnName, string $type) : Column

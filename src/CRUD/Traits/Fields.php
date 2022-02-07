@@ -32,6 +32,8 @@ trait Fields {
                         case 'classes': $fields[$setFieldName]->setClasses($dataValue); break;
 
                         case 'data': $fields[$setFieldName]->setData($dataValue); break;
+
+                        case 'value': $fields[$setFieldName]->setData(array_merge($fields[$setFieldName]->getData(), ['value' => $dataValue])); break;
                     }
                 }
 
@@ -49,8 +51,10 @@ trait Fields {
         $this->fields = $fields;
     }
 
-    public function deleteField(string $fieldName) {
-        unset($this->fields[$fieldName]);
+    public function deleteField(string ...$fieldNames) {
+        foreach($fieldNames as $fieldName) {
+            unset($this->fields[$fieldName]);
+        }
     }
 
     public function moveFieldToCard(string $fieldName, string $cardId) {

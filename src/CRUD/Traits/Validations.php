@@ -44,8 +44,10 @@ trait Validations {
         $this->validations = $validations;
     }
 
-    public function deleteValidation($fieldName) {
-        unset($this->validations[$fieldName]);
+    public function deleteValidation(string ...$fieldNames) {
+        foreach($fieldNames as $fieldName) {
+            unset($this->validations[$fieldName]);
+        }
     }
 
     public function createValidationClass ($fieldName, $rules, $attribute, $messages = [], $prepare = null) : Validation

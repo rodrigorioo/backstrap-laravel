@@ -42,8 +42,10 @@ trait Cards {
         $this->cards = $cards;
     }
 
-    public function deleteCard($cardId) {
-        unset($this->cards[$cardId]);
+    public function deleteCard(string ...$cardIds) {
+        foreach($cardIds as $cardId) {
+            unset($this->cards[$cardId]);
+        }
     }
 
     public function createCardClass($cardId, $cardName, $cardClass = '', $headerClass = '', $bodyClass = '') : Card {

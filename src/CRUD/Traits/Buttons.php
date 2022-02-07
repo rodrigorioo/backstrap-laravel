@@ -6,7 +6,7 @@ use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Button;
 
 trait Buttons {
 
-    public function getButtons (): array {
+    public function getButtons () : array {
         return $this->buttons;
     }
 
@@ -25,8 +25,10 @@ trait Buttons {
         }
     }
 
-    public function deleteButton($buttonName) {
-        unset($this->buttons[$buttonName]);
+    public function deleteButton(string ...$buttonNames) {
+        foreach($buttonNames as $buttonName) {
+            unset($this->buttons[$buttonName]);
+        }
     }
 
     public function addDefaultButtons () {
