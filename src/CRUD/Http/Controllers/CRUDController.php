@@ -24,6 +24,7 @@ abstract class CRUDController extends Controller
     protected string $modelName = '';
     protected string $modelNamePlural = '';
     protected array $parameters = [];
+    protected bool $isNested = false;
 
     // CRUD attributes
 
@@ -56,7 +57,7 @@ abstract class CRUDController extends Controller
 
     public function __construct () {
 
-        // MODEL NAMES
+        // Model names
         if($this->modelName == '') {
             $explodeModel = explode("\\", $this->model);
 
@@ -90,13 +91,7 @@ abstract class CRUDController extends Controller
         $this->parameters = $parameters;
     }
 
-    public function getUrl ($action, $id = null) {
-
-        // Get route parameters
-        $parameters = [];
-        foreach(Route::getCurrentRoute()->parameters as $nameParameter => $valueParameter) {
-            $parameters[] = $valueParameter;
-        }
+    private function getUrl ($action, $id = null) {
 
         $url = '';
         $controller = explode('@', Route::currentRouteAction())[0];
@@ -122,13 +117,13 @@ abstract class CRUDController extends Controller
         return $url;
     }
 
-    private function viewData () {
+    final private function viewData () {
         return [
             'modelNamePlural' => $this->modelNamePlural,
         ];
     }
 
-    private function getAllFields () {
+    final private function getAllFields () {
 
         $cards = $this->getCards();
         $fields = $this->getFields();
@@ -138,6 +133,79 @@ abstract class CRUDController extends Controller
         }
 
         return $fields;
+    }
+
+    final private function loadDataToModel($model, $fields, Request $request) {
+
+        foreach($fields as $fieldName => $field) {
+
+            $model->{$fieldName} = $field->getValue($request, $model->{$fieldName});
+
+//            switch($fieldData['type']) {
+//
+//                case 'image':
+//                case 'file':
+//
+//                    if($request->file($nameField)) {
+//
+//                        $uploadFile = config('backstrap_laravel.upload_file');
+//                        $file = $request->file($nameField);
+//
+//                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
+//
+//                        $model->{$nameField} = $fileUrl;
+//                    }
+//
+//                    break;
+//
+//                default:
+//
+//                    $model->{$nameField} = $request->{$nameField};
+//                    break;
+//            }
+
+        }
+
+        return $model;
+    }
+
+    final private function generateParentBreadcrumbs () {
+
+        $parameters = $this->parameters;
+
+        if(count($parameters) > 0 && $this->isNested) {
+
+            $breadcrumbs = [];
+
+            foreach($parameters as $nameParameter => $valueParameter) {
+
+                $upperName = ucwords($nameParameter);
+                $pluralNameUpper = $upperName.'s';
+                $pluralNameLower = $nameParameter.'s';
+                $modelName = '\App\Models\\'.$upperName;
+
+                $model = $modelName::findOrFail($valueParameter);
+
+                $urlIndex = Route::getRoutes()->getByName($pluralNameLower.'.index')->action;
+                $urlEdit = Route::getRoutes()->getByName($pluralNameLower.'.edit')->action;
+
+                $newBreadcrumbs[] = [
+                    'text' => __('backstrap_laravel::crud.create.list_of').$pluralNameUpper,
+                    'url' => action($urlIndex['controller']),
+                ];
+
+                $newBreadcrumbs[] = [
+                    'text' => __('backstrap_laravel::crud.edit.breadcrumb_title'),
+                    'url' => action($urlEdit['controller'], $model),
+                ];
+
+                $breadcrumbs = array_merge($breadcrumbs, $newBreadcrumbs);
+            }
+
+            return $breadcrumbs;
+        }
+
+        return [];
     }
 
     /**
@@ -166,7 +234,7 @@ abstract class CRUDController extends Controller
             foreach($columns as $columnName => $column) {
 
                 // Set rawcolumns
-                if(in_array($column->getType(), ['image'])) {
+                if(in_array($column->getType(), ['image', 'html'])) {
                     $rawColumns[] = $columnName;
                 }
 
@@ -203,7 +271,7 @@ abstract class CRUDController extends Controller
                             break;
                     }
 
-                    $actions .= $button->render();
+                    $actions .= $button->render($element);
                 }
 
                 $actions .= '</div>';
@@ -227,6 +295,7 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.index')->with(
             array_merge($this->viewData(), [
+                'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
                 'urlCreate' => $this->getUrl('create'),
                 'urlIndex' => $this->getUrl('index'),
                 'columnsTable' => $columnsTable,
@@ -247,6 +316,7 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
+                'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
                 'urlStore' => $this->getUrl('store'),
                 'urlIndex' => $this->getUrl('index'),
                 'cards' => $this->getCards(),
@@ -299,8 +369,9 @@ abstract class CRUDController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(...$ids)
     {
+        $id = end($ids);
         return $this->edit($id);
     }
 
@@ -310,8 +381,9 @@ abstract class CRUDController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(...$ids)
     {
+        $id = end($ids);
         $model = $this->model::findOrFail($id);
 
         // Setup
@@ -319,6 +391,7 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
+                'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
                 'urlUpdate' => $this->getUrl('update', $id),
                 'urlIndex' => $this->getUrl('index'),
                 'cards' => $this->getCards(),
@@ -335,8 +408,10 @@ abstract class CRUDController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, ...$ids)
     {
+        $id = end($ids);
+
         // Setup
         $this->setupEdit();
 
@@ -373,8 +448,9 @@ abstract class CRUDController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(...$ids)
     {
+        $id = end($ids);
         $model = $this->model::findOrFail($id);
 
         if ($model->delete()) {
@@ -394,45 +470,12 @@ abstract class CRUDController extends Controller
         ]));
     }
 
-    private function loadDataToModel($model, $fields, Request $request) {
-
-        foreach($fields as $fieldName => $field) {
-
-            $model->{$fieldName} = $field->getValue($request, $model->{$fieldName});
-
-//            switch($fieldData['type']) {
-//
-//                case 'image':
-//                case 'file':
-//
-//                    if($request->file($nameField)) {
-//
-//                        $uploadFile = config('backstrap_laravel.upload_file');
-//                        $file = $request->file($nameField);
-//
-//                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
-//
-//                        $model->{$nameField} = $fileUrl;
-//                    }
-//
-//                    break;
-//
-//                default:
-//
-//                    $model->{$nameField} = $request->{$nameField};
-//                    break;
-//            }
-
-        }
-
-        return $model;
-    }
-
+    // Get models for index view
     public function queryGetModels () {
         return $this->model::latest();
     }
 
-    // SETUPS
+    // Setups
     abstract public function setupIndex ();
     abstract public function setupCreate ();
     abstract public function setupEdit ();
