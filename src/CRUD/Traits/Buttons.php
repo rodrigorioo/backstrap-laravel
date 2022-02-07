@@ -30,9 +30,6 @@ trait Buttons {
     }
 
     public function addDefaultButtons () {
-//        $this->createButton('edit_button', 'Editar', "btn btn-success btn-sm mr-1", $this->getUrl('edit', $element->id));
-//        $this->createButton('delete_button', 'Borrar', "delete btn btn-danger btn-sm", $this->getUrl('edit', $element->id));
-
         $this->createButton('edit_button', 'Editar', "btn btn-success btn-sm mr-1", '');
         $this->createButton('delete_button', 'Borrar', "delete btn btn-danger btn-sm", '');
 

@@ -83,10 +83,6 @@ abstract class CRUDController extends Controller
 
         // Route parameters
         $this->setRouteParameters();
-
-        // Setup
-        // $this->setup();
-
     }
 
     private function setRouteParameters () {

@@ -48,7 +48,8 @@ trait Validations {
         unset($this->validations[$fieldName]);
     }
 
-    public function createValidationClass ($fieldName, $rules, $attribute, $messages = [], $prepare = null) {
+    public function createValidationClass ($fieldName, $rules, $attribute, $messages = [], $prepare = null) : Validation
+    {
         return new Validation($fieldName, $rules, $attribute, $messages, $prepare);
     }
 

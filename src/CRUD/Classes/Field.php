@@ -19,7 +19,7 @@ class Field
         $this->setData($data);
     }
 
-    protected function getExtraData ($errors) : array {
+    final protected function getExtraData ($errors) : array {
 
         $inputExtraData = [];
 
