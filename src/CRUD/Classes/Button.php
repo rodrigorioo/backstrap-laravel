@@ -5,18 +5,18 @@ namespace Rodrigorioo\BackStrapLaravel\CRUD\Classes;
 class Button {
 
     private string $name = '';
-    private string $url = '';
+    private $url = null;
     private string $classes = '';
     private string $text = '';
 
-    public function __construct ($name, $url, $classes, $text) {
+    public function __construct (string $name, $url, string $classes, string $text) {
         $this->setName($name);
         $this->setUrl($url);
         $this->setClasses($classes);
         $this->setText($text);
     }
 
-    public function render () {
+    public function render ($model = null) {
 
         $html = '';
 
@@ -40,11 +40,24 @@ class Button {
 
             default:
 
-                $html = '<a href="'.$this->getUrl().'" class="'.$this->getClasses().'">'.$this->getText().'</a>';
+                $html = '<a href="'.$this->generateUrl($model).'" class="'.$this->getClasses().'">'.$this->getText().'</a>';
                 break;
         }
 
         return $html;
+    }
+
+    private function generateUrl ($model) {
+
+        if(is_array($this->getUrl())) {
+
+            $attribute = (isset($this->getUrl()['attribute'])) ? $this->getUrl()['attribute'] : 'id';
+            $url = action($this->getUrl()['url'], $model->{$attribute});
+
+            return $url;
+        }
+
+        return $this->getUrl();
     }
 
     /**
@@ -64,17 +77,17 @@ class Button {
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getUrl(): string
+    public function getUrl()
     {
         return $this->url;
     }
 
     /**
-     * @param string $url
+     * @param $url
      */
-    public function setUrl(string $url): void
+    public function setUrl($url): void
     {
         $this->url = $url;
     }
