@@ -169,15 +169,38 @@ abstract class CRUDController extends Controller
         return $model;
     }
 
-    final private function generateParentBreadcrumbs () {
+    final private function generateParentBreadcrumbs () : array
+    {
+        // Vars
+        $breadcrumbs = [];
+        $urls = [];
 
+        // Add current route to urls
+        $currentRoute = Route::getCurrentRoute();
+        $actionCurrentRoute = $currentRoute->action;
+        $controllerCurrentRoute = $currentRoute->controller;
+        $modelNamePlural = $controllerCurrentRoute->modelNamePlural;
+        $asActionCurrentRoute = $actionCurrentRoute['as'];
+
+        // Add current url to array
+        array_unshift($urls, $asActionCurrentRoute);
+
+        // Explode 'as' name
+        $explodeAsActionCurrentRoute = explode('.', $asActionCurrentRoute);
+
+        // Parameters
         $parameters = $this->parameters;
-
+        $currentParameters = [];
         if(count($parameters) > 0 && $this->isNested) {
 
-            $breadcrumbs = [];
+            $actualModelName = strtolower($controllerCurrentRoute->modelName);
 
             foreach($parameters as $nameParameter => $valueParameter) {
+
+                if($nameParameter == $actualModelName) continue;
+
+                // Add parameter to array
+                $currentParameters[$nameParameter] = $valueParameter;
 
                 $upperName = ucwords($nameParameter);
                 $pluralNameUpper = $upperName.'s';
@@ -186,26 +209,55 @@ abstract class CRUDController extends Controller
 
                 $model = $modelName::findOrFail($valueParameter);
 
-                $urlIndex = Route::getRoutes()->getByName($pluralNameLower.'.index')->action;
-                $urlEdit = Route::getRoutes()->getByName($pluralNameLower.'.edit')->action;
+                $urlIndex = action(Route::getRoutes()->getByName($pluralNameLower.'.index')->action['controller']);
+                $urlEdit = action(Route::getRoutes()->getByName($pluralNameLower.'.edit')->action['controller'], array_merge(array_values($currentParameters), [$model]));
 
-                $newBreadcrumbs[] = [
-                    'text' => __('backstrap_laravel::crud.create.list_of').$pluralNameUpper,
-                    'url' => action($urlIndex['controller']),
+                $breadcrumbs[] = [
+                    'text' => __('backstrap_laravel::crud.create.list_of') . $pluralNameUpper,
+                    'url' => $urlIndex,
                 ];
 
-                $newBreadcrumbs[] = [
+                $breadcrumbs[] = [
                     'text' => __('backstrap_laravel::crud.edit.breadcrumb_title'),
-                    'url' => action($urlEdit['controller'], $model),
+                    'url' => $urlEdit,
                 ];
-
-                $breadcrumbs = array_merge($breadcrumbs, $newBreadcrumbs);
             }
-
-            return $breadcrumbs;
         }
 
-        return [];
+        // Add actual URL
+        switch($explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1]) {
+
+            case 'create':
+            case 'edit':
+
+                $urlIndex = action(get_class($controllerCurrentRoute).'@index', $currentParameters);
+
+                $breadcrumbActual = '';
+                if($explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1] == 'create') {
+                    $breadcrumbActual = __('backstrap_laravel::crud.create.breadcrumb_title');
+                } else { // If it's edit
+                    $breadcrumbActual = __('backstrap_laravel::crud.edit.breadcrumb_title');
+                }
+
+                array_push($breadcrumbs, [
+                    'text' => __('backstrap_laravel::crud.create.list_of').$modelNamePlural,
+                    'url' => $urlIndex,
+                ], [
+                        'text' => $breadcrumbActual,
+                    ]);
+
+                break;
+
+            case 'index':
+
+                $breadcrumbs[] = [
+                    'text' => __('backstrap_laravel::crud.index.list_of') . $modelNamePlural,
+                ];
+
+                break;
+        }
+
+        return $breadcrumbs;
     }
 
     /**

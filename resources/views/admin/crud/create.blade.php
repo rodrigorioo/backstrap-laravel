@@ -7,13 +7,6 @@
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             $parentBreadcrumbs,
-            [
-                'text' => __('backstrap_laravel::crud.create.list_of').$modelNamePlural,
-                'url' => $urlIndex,
-            ],
-            [
-                'text' => __('backstrap_laravel::crud.create.breadcrumb_title'),
-            ],
         ]) !!}
 @stop
 

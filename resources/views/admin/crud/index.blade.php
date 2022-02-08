@@ -7,9 +7,6 @@
     {!! BackStrapLaravel::breadcrumbs([
             BackStrapLaravel::getHomeBreadcrumb(),
             $parentBreadcrumbs,
-            [
-                'text' => __('backstrap_laravel::crud.index.list_of').$modelNamePlural,
-            ],
         ]) !!}
 @stop
 
