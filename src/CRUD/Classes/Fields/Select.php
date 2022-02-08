@@ -9,7 +9,7 @@ class Select extends Field {
 
     public function render ($errors, $model = null) {
 
-        $values = $this->getData();
+        $values = $this->getData()['values'];
 
         $value = null;
         if($model !== null) {

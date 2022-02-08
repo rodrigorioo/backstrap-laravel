@@ -33,7 +33,8 @@ trait Fields {
 
                         case 'data': $fields[$setFieldName]->setData($dataValue); break;
 
-                        case 'value': $fields[$setFieldName]->setData(array_merge($fields[$setFieldName]->getData(), ['value' => $dataValue])); break;
+                        case 'values':
+                        case 'value': $fields[$setFieldName]->setData(array_merge($fields[$setFieldName]->getData(), [$dataName => $dataValue])); break;
                     }
                 }
 
