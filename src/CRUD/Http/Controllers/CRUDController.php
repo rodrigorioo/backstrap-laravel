@@ -193,24 +193,31 @@ abstract class CRUDController extends Controller
         $currentParameters = [];
         if(count($parameters) > 0 && $this->isNested) {
 
-            $actualModelName = strtolower($controllerCurrentRoute->modelName);
+            $actualModelName = $controllerCurrentRoute->modelName;
 
             foreach($parameters as $nameParameter => $valueParameter) {
 
-                if($nameParameter == $actualModelName) continue;
+                $modelUpperName = str_replace(' ', '', ucwords(str_replace('_', ' ', $nameParameter)));
+                $pluralNameUpper = $modelUpperName.'s';
+                $pluralNameLower = $nameParameter.'s';
+                $modelName = '\App\Models\\'.$modelUpperName;
+
+                if($modelUpperName == $actualModelName) continue;
 
                 // Add parameter to array
                 $currentParameters[$nameParameter] = $valueParameter;
-
-                $upperName = ucwords($nameParameter);
-                $pluralNameUpper = $upperName.'s';
-                $pluralNameLower = $nameParameter.'s';
-                $modelName = '\App\Models\\'.$upperName;
+                
+                // Merge all current route parameters for get the route name
+                $fullRouteName = '';
+                foreach($currentParameters as $nameCurrentParameter => $valueCurrentParameter) {
+                    $fullRouteName .= ($fullRouteName != '') ? '.' : '';
+                    $fullRouteName .= str_replace('_', '-', $nameCurrentParameter).'s';
+                }
 
                 $model = $modelName::findOrFail($valueParameter);
 
-                $urlIndex = action(Route::getRoutes()->getByName($pluralNameLower.'.index')->action['controller']);
-                $urlEdit = action(Route::getRoutes()->getByName($pluralNameLower.'.edit')->action['controller'], array_merge(array_values($currentParameters), [$model]));
+                $urlIndex = action(Route::getRoutes()->getByName($fullRouteName.'.index')->action['controller'], array_values($currentParameters));
+                $urlEdit = action(Route::getRoutes()->getByName($fullRouteName.'.edit')->action['controller'], array_merge(array_values($currentParameters)));
 
                 $breadcrumbs[] = [
                     'text' => __('backstrap_laravel::crud.create.list_of') . $pluralNameUpper,
