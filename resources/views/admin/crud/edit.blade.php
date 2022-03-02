@@ -20,12 +20,15 @@
             <div class="card">
                 {{ Form::open(['url' => $urlUpdate, 'method' => 'PUT', 'files' => true]) }}
                 <div class="card-header">
-                    <strong>{{ $modelNamePlural }}</strong>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <strong>{{ $modelNamePlural }}</strong>
 
-                    @if(array_key_exists('Spatie\Translatable\HasTranslations', class_uses($modelClass)))
-                        {{ Form::hidden('_set_language', $languageSelected['language']) }}
-                        <x-backstrap_laravel::select_language :languageSelected="$languageSelected"></x-backstrap_laravel::select_language>
-                    @endif
+                        @if(array_key_exists('Spatie\Translatable\HasTranslations', class_uses($modelClass)))
+                            {{ Form::hidden('_set_language', $languageSelected['language']) }}
+                            <x-backstrap_laravel::select_language :languageSelected="$languageSelected"></x-backstrap_laravel::select_language>
+                        @endif
+                    </div>
+
                 </div>
                 <div class="card-body">
 

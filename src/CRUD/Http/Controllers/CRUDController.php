@@ -148,9 +148,13 @@ abstract class CRUDController extends Controller
             if($languages && count($languages) > 0) {
 
                 // If the field is translatable
-                if(array_key_exists($fieldName, $model->getTranslations())) {
+                if(in_array("Spatie\Translatable\HasTranslations", array_keys(class_uses($model))) && array_key_exists($fieldName, $model->getTranslations())) {
                     $model->setTranslation($fieldName, request('_set_language'), $valueRequest);
+                } else {
+                    // If it's not, only set the value
+                    $model->{$fieldName} = $valueRequest;
                 }
+
             } else {
 
                 // If not have translations, only set the value
