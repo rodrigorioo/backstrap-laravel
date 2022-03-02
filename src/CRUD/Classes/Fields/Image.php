@@ -15,7 +15,7 @@ class Image extends Field {
         $value = null;
         if($model !== null) {
 
-            $value = $model->{$this->getFieldName()};
+            $value = $this->getValue($model);
 
             if($value != '') {
                 $returnInput .= '<div class="my-1"><img src="'.asset($value).'" class="img-fluid" style="max-height: 150px;"></div>';
@@ -30,7 +30,7 @@ class Image extends Field {
         return $returnInput;
     }
 
-    public function getValue(Request $request, $defaultValue = null) {
+    public function getValueRequest(Request $request, $defaultValue = null) {
 
         $value = null;
 

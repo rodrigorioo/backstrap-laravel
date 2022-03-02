@@ -21,6 +21,11 @@
                 {{ Form::open(['url' => $urlStore, 'files' => true]) }}
                     <div class="card-header">
                         <strong>{{ $modelNamePlural }}</strong>
+
+                        @if(array_key_exists('Spatie\Translatable\HasTranslations', class_uses($modelClass)))
+                            {{ Form::hidden('_set_language', $languageSelected['language']) }}
+                            <x-backstrap_laravel::select_language :languageSelected="$languageSelected"></x-backstrap_laravel::select_language>
+                        @endif
                     </div>
                     <div class="card-body">
 

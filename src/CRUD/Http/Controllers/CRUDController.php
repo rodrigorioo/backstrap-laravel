@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Language;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Buttons;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Cards;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Columns;
@@ -139,31 +140,22 @@ abstract class CRUDController extends Controller
 
         foreach($fields as $fieldName => $field) {
 
-            $model->{$fieldName} = $field->getValue($request, $model->{$fieldName});
+            $valueRequest = $field->getValueRequest($request, $model->{$fieldName});
 
-//            switch($fieldData['type']) {
-//
-//                case 'image':
-//                case 'file':
-//
-//                    if($request->file($nameField)) {
-//
-//                        $uploadFile = config('backstrap_laravel.upload_file');
-//                        $file = $request->file($nameField);
-//
-//                        $fileUrl = $uploadFile['directory'].'/'.$file->store(strtolower($this->modelNamePlural), 'backstrap_laravel');
-//
-//                        $model->{$nameField} = $fileUrl;
-//                    }
-//
-//                    break;
-//
-//                default:
-//
-//                    $model->{$nameField} = $request->{$nameField};
-//                    break;
-//            }
+            // If it has translations
+            $languages = config('backstrap_laravel.languages');
 
+            if($languages && count($languages) > 0) {
+
+                // If the field is translatable
+                if(array_key_exists($fieldName, $model->getTranslations())) {
+                    $model->setTranslation($fieldName, request('_set_language'), $valueRequest);
+                }
+            } else {
+
+                // If not have translations, only set the value
+                $model->{$fieldName} = $valueRequest;
+            }
         }
 
         return $model;
@@ -368,7 +360,7 @@ abstract class CRUDController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         // Setup
         $this->setupCreate();
@@ -380,6 +372,11 @@ abstract class CRUDController extends Controller
                 'urlIndex' => $this->getUrl('index'),
                 'cards' => $this->getCards(),
                 'fields' => $this->getFields(),
+
+                'model' => $this->modelClass,
+
+                'modelClass' => $this->modelClass,
+                'languageSelected' => Language::getLanguageSelected($request),
             ]),
         );
     }
@@ -440,7 +437,7 @@ abstract class CRUDController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(...$ids)
+    public function edit(Request $request, ...$ids)
     {
         $id = end($ids);
         $model = $this->model::findOrFail($id);
@@ -456,6 +453,9 @@ abstract class CRUDController extends Controller
                 'cards' => $this->getCards(),
                 'fields' => $this->getFields(),
                 'model' => $model,
+
+                'modelClass' => $this->modelClass,
+                'languageSelected' => Language::getLanguageSelected($request),
             ]),
         );
     }

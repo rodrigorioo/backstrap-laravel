@@ -13,7 +13,7 @@ class Select extends Field {
 
         $value = null;
         if($model !== null) {
-            $value = $model->{$this->getFieldName()};
+            $value = $this->getValue($model);
         }
 
         $returnInput = FormFacade::label($this->getFieldName(), $this->getName());

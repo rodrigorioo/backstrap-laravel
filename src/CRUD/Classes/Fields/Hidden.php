@@ -11,7 +11,7 @@ class Hidden extends Field {
 
         $value = null;
         if($model !== null) {
-            $value = $model->{$this->getFieldName()};
+            $value = $this->getValue($model);
         } else {
             if(array_key_exists('value', $this->getData())) {
                 $value = $this->getData()['value'];

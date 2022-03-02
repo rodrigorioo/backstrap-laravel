@@ -16,7 +16,8 @@
         "illuminate/support": ">=4.0",
         "laravelcollective/html": "6.x-dev",
         "yajra/laravel-datatables-oracle": "9.0.x-dev",
-        "spatie/laravel-permission": "dev-main"
+        "spatie/laravel-permission": "dev-main",
+        "spatie/laravel-translatable": "^4.6"
     },
     "autoload": {
         "psr-4": {

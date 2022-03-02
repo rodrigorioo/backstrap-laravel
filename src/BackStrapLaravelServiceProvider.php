@@ -2,13 +2,12 @@
 
 namespace Rodrigorioo\BackStrapLaravel;
 
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Rodrigorioo\BackStrapLaravel\Facades\BackStrapLaravel;
 use Rodrigorioo\BackStrapLaravel\Http\Middleware\AdminAuthenticate;
-use Rodrigorioo\BackStrapLaravel\BackStrapLaravelService;
-use Rodrigorioo\BackStrapLaravel\Models\Administrator;
 use Rodrigorioo\BackStrapLaravel\View\Components\Errors;
 
 class BackStrapLaravelServiceProvider extends ServiceProvider {
@@ -23,55 +22,56 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
      */
     public function register() {
 
-        // CONFIG
+        // Config
         $configPath = __DIR__.'/../config/backstrap_laravel.php';
         $this->mergeConfigFrom($configPath, 'backstrap_laravel');
 
-        // FACADES
+        // Facades
         $this->app->bind('backstrap_laravel', function($app) {
             return new BackStrapLaravelService;
         });
 
-        // MIDDLEWARES
+        // Middlewares
         $router = $this->app->make(Router::class);
         $router->aliasMiddleware('backstrap_laravel_admin_authenticate', AdminAuthenticate::class);
         $router->aliasMiddleware('role', \Spatie\Permission\Middlewares\RoleMiddleware::class);
         $router->aliasMiddleware('permission', \Spatie\Permission\Middlewares\PermissionMiddleware::class);
         $router->aliasMiddleware('role_or_permission', \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class);
+        $kernel = $this->app->make(Kernel::class);
 
-        // GUARDS
+        // Guards
         $this->addGuard();
 
-        // FILESYSTEMS
+        // Filesystems
         $this->addFilesystem();
     }
 
     public function boot () {
 
-        // CONFIG
+        // Config
         $configPath = __DIR__.'/../config/backstrap_laravel.php';
         $this->publishes([
             $configPath => config_path('backstrap_laravel.php'),
         ], 'config');
 
-        // ASSETS
+        // Assets
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/backstrap_laravel'),
         ], 'assets');
 
-        // ROUTES
+        // Routes
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
 
-        // MIGRATIONS
+        // Migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        // SEEDERS
+        // Seeders
         $this->publishes([
             __DIR__.'/../database/seeders' => database_path('seeders'),
         ], 'seeders');
 
-        // ROLES & PERMISSIONS
+        // Roles & Permissions
         $rolesEnabled = config('backstrap_laravel.crud_roles.enable');
         $permissionsEnabled = config('backstrap_laravel.crud_permissions.enable');
         if($rolesEnabled && $permissionsEnabled) {
@@ -80,18 +80,18 @@ class BackStrapLaravelServiceProvider extends ServiceProvider {
             });
         }
 
-        // VIEWS
+        // Views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'backstrap_laravel');
 
-        // VIEW COMPONENTS
+        // View components
         $this->loadViewComponentsAs('backstrap_laravel', [
             Errors::class,
         ]);
 
-        // TRANSLATIONS
+        // Translations
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'backstrap_laravel');
 
-        // SEND TEMPLATE CONFIGURATION
+        // Send template configuration
         view()->composer('backstrap_laravel::login', function($view) {
             $view->with('templateConfiguration', BackStrapLaravel::getTemplateConfiguration());
         });

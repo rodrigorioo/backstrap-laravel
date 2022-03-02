@@ -15,7 +15,7 @@ class Checkbox extends Field {
 
         $value = null;
         if($model !== null) {
-            $value = $model->{$this->getFieldName()};
+            $value = $this->getValue($model);
         }
 
         foreach($values as $iValue => $textValue) {

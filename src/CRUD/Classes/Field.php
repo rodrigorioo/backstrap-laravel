@@ -44,8 +44,30 @@ class Field
 
     }
 
-    public function getValue (Request $request, $defaultValue = null) {
+    public function getValueRequest (Request $request, $defaultValue = null) {
         return $request->{$this->getFieldName()};
+    }
+
+    public function getValue ($model) {
+
+        $languages = config('backstrap_laravel.languages');
+
+        // If it has translations
+        if($languages && count($languages) > 0) {
+
+            $setLanguage = request('set_language');
+
+            if($setLanguage) {
+
+                // If the attribute is translatable
+                if(array_key_exists($this->getFieldName(), $model->getTranslations())) {
+                    return $model->getTranslation($this->getFieldName(), $setLanguage);
+                }
+
+            }
+        }
+
+        return $model->{$this->getFieldName()};
     }
 
     public function getFieldClass () : string {
