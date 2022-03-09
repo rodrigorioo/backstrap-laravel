@@ -8,7 +8,7 @@
             @foreach(config('backstrap_laravel.languages') as $language => $languageName)
 
                 @if($language != $languageSelected['language'])
-                    <a class="dropdown-item" href="{{ URL::current() }}?set_language={{ $language }}">{{ $languageName }}</a>
+                    <a class="dropdown-item" href="{{ URL::full() }}?set_language={{ $language }}">{{ $languageName }}</a>
                 @endif
             @endforeach
         </div>
