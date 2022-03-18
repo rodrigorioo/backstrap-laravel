@@ -93,7 +93,7 @@ abstract class CRUDController extends Controller
         $this->parameters = $parameters;
 
         $queryParameters = request()->query;
-        $this->queryParameters = $queryParameters;
+        $this->queryParameters = $queryParameters->all();
     }
 
     private function getUrl ($action, $id = null) {
