@@ -60,12 +60,13 @@ abstract class CRUDController extends Controller
 
         // Model names
         if($this->modelName == '') {
+
             $explodeModel = explode("\\", $this->model);
 
             $this->modelName = $explodeModel[count($explodeModel) - 1];
 
             if($this->modelNamePlural == '') {
-                $this->modelNamePlural = $this->modelName.'s';
+                $this->modelNamePlural = ltrim(preg_replace('/[A-Z]/', ' $0', $this->modelName)).'s';
             }
         }
 
@@ -90,6 +91,9 @@ abstract class CRUDController extends Controller
     private function setRouteParameters () {
         $parameters = Route::getCurrentRoute()->parameters;
         $this->parameters = $parameters;
+
+        $queryParameters = request()->query;
+        $this->queryParameters = $queryParameters;
     }
 
     private function getUrl ($action, $id = null) {
@@ -194,8 +198,8 @@ abstract class CRUDController extends Controller
             foreach($parameters as $nameParameter => $valueParameter) {
 
                 $modelUpperName = str_replace(' ', '', ucwords(str_replace('_', ' ', $nameParameter)));
-                $pluralNameUpper = $modelUpperName.'s';
-                $pluralNameLower = $nameParameter.'s';
+                $pluralNameUpper = ltrim(preg_replace('/[A-Z]/', ' $0', $modelUpperName)).'s';
+                $pluralNameLower = ltrim(preg_replace('/[A-Z]/', ' $0', $nameParameter)).'s';
                 $modelName = '\App\Models\\'.$modelUpperName;
 
                 if($modelUpperName == $actualModelName) continue;
