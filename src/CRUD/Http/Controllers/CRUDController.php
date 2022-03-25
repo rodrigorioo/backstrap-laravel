@@ -25,6 +25,7 @@ abstract class CRUDController extends Controller
     protected string $modelName = '';
     protected string $modelNamePlural = '';
     protected array $parameters = [];
+    protected array $queryParameters = [];
     protected bool $isNested = false;
 
     // CRUD attributes
