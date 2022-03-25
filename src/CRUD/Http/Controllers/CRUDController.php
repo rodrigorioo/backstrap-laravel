@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Language;
+use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Model;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Buttons;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Cards;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Columns;
@@ -20,12 +21,9 @@ abstract class CRUDController extends Controller
 {
     use Columns, Buttons, Fields, Cards, Validations;
 
-    protected $model = null;
-    protected $modelClass = null;
-    protected string $modelName = '';
-    protected string $modelNamePlural = '';
-    protected array $parameters = [];
-    protected array $queryParameters = [];
+    protected $model;
+    protected Model $modelCrud;
+    protected \Rodrigorioo\BackStrapLaravel\CRUD\Classes\Route $route;
     protected bool $isNested = false;
 
     // CRUD attributes
@@ -59,28 +57,17 @@ abstract class CRUDController extends Controller
 
     public function __construct () {
 
-        // Model names
-        if($this->modelName == '') {
-
-            $explodeModel = explode("\\", $this->model);
-
-            $this->modelName = $explodeModel[count($explodeModel) - 1];
-
-            if($this->modelNamePlural == '') {
-                $this->modelNamePlural = ltrim(preg_replace('/[A-Z]/', ' $0', $this->modelName)).'s';
-            }
-        }
-
-        $this->modelClass = new $this->model;
+        // Model
+        $this->modelCrud = new Model($this->model);
 
         // Fields
-        $this->addFieldsFromDB($this->modelClass);
+        $this->addFieldsFromDB($this->modelCrud->getModelInstance());
 
         // Validations
-        $this->addValidationsFromDB($this->modelClass);
+        $this->addValidationsFromDB($this->modelCrud->getModelInstance());
 
         // Columns
-        $this->addColumnsFromDB($this->modelClass);
+        $this->addColumnsFromDB($this->modelCrud->getModelInstance());
 
         // Buttons
         $this->addDefaultButtons();
@@ -90,17 +77,13 @@ abstract class CRUDController extends Controller
     }
 
     private function setRouteParameters () {
-        $parameters = Route::getCurrentRoute()->parameters;
-        $this->parameters = $parameters;
-
-        $queryParameters = request()->query;
-        $this->queryParameters = $queryParameters->all();
+        $this->route = new \Rodrigorioo\BackStrapLaravel\CRUD\Classes\Route();
     }
 
     private function getUrl ($action, $id = null) {
 
         $url = '';
-        $controller = explode('@', Route::currentRouteAction())[0];
+        $controller = explode('@', $this->route->getCurrentRouteAction()['controller'])[0];
 
         switch($action) {
 
@@ -108,7 +91,7 @@ abstract class CRUDController extends Controller
             case 'create':
             case 'store':
 
-                $url = action($controller.'@'.$action, array_values($this->parameters));
+                $url = action($controller.'@'.$action, array_values($this->route->getParameters()));
                 break;
 
             case 'show':
@@ -116,7 +99,7 @@ abstract class CRUDController extends Controller
             case 'update':
             case 'destroy':
 
-                $url = action($controller.'@'.$action, array_merge(array_values($this->parameters), [$id]));
+                $url = action($controller.'@'.$action, array_merge(array_values($this->route->getParameters()), [$id]));
                 break;
         }
 
@@ -125,7 +108,7 @@ abstract class CRUDController extends Controller
 
     final private function viewData () {
         return [
-            'modelNamePlural' => $this->modelNamePlural,
+            'modelNamePlural' => $this->modelCrud->getModelNamePlural(),
         ];
     }
 
@@ -177,10 +160,10 @@ abstract class CRUDController extends Controller
         $urls = [];
 
         // Add current route to urls
-        $currentRoute = Route::getCurrentRoute();
+        $currentRoute = $this->route->getCurrentRoute();
         $actionCurrentRoute = $currentRoute->action;
         $controllerCurrentRoute = $currentRoute->controller;
-        $modelNamePlural = $controllerCurrentRoute->modelNamePlural;
+        $modelNamePlural = $controllerCurrentRoute->modelCrud->getModelNamePlural();
         $asActionCurrentRoute = $actionCurrentRoute['as'];
 
         // Add current url to array
@@ -190,7 +173,7 @@ abstract class CRUDController extends Controller
         $explodeAsActionCurrentRoute = explode('.', $asActionCurrentRoute);
 
         // Parameters
-        $parameters = $this->parameters;
+        $parameters = $this->route->getParameters();
         $currentParameters = [];
         if(count($parameters) > 0 && $this->isNested) {
 
@@ -382,9 +365,9 @@ abstract class CRUDController extends Controller
                 'cards' => $this->getCards(),
                 'fields' => $this->getFields(),
 
-                'model' => $this->modelClass,
+                'model' => $this->modelCrud->getModelInstance(),
 
-                'modelClass' => $this->modelClass,
+                'modelClass' => $this->modelCrud->getModelInstance(),
                 'languageSelected' => Language::getLanguageSelected($request),
             ]),
         );
@@ -463,7 +446,7 @@ abstract class CRUDController extends Controller
                 'fields' => $this->getFields(),
                 'model' => $model,
 
-                'modelClass' => $this->modelClass,
+                'modelClass' => $this->modelCrud->getModelInstance(),
                 'languageSelected' => Language::getLanguageSelected($request),
             ]),
         );
