@@ -65,7 +65,14 @@ class Button {
 
             if($hasModelAttribute) {
                 $modelAttribute = (isset($url['model_attribute'])) ? $url['model_attribute'] : 'id';
-                $attributes[] = $model->{$modelAttribute};
+
+                // Has name model attribute
+                if(isset($url['name_model_attribute'])) {
+                    $attributes[$url['name_model_attribute']] = $model->{$modelAttribute};
+                } else {
+                    $attributes[] = $model->{$modelAttribute};
+                }
+
             }
 
             // Has other attributes
