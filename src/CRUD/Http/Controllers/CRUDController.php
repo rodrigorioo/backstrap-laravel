@@ -55,7 +55,7 @@ abstract class CRUDController extends Controller
      */
     protected array $validations = [];
 
-    public function __construct () {
+    final public function __construct () {
 
         // Model
         $this->modelCrud = new Model($this->model);
@@ -76,7 +76,7 @@ abstract class CRUDController extends Controller
         $this->setRouteParameters();
     }
 
-    private function setRouteParameters () {
+    final private function setRouteParameters () {
         $this->route = new \Rodrigorioo\BackStrapLaravel\CRUD\Classes\Route();
     }
 
