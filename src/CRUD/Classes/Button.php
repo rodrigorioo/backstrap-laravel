@@ -49,14 +49,34 @@ class Button {
 
     private function generateUrl ($model) {
 
+        // If the URL is array
         if(is_array($this->getUrl())) {
 
-            $attribute = (isset($this->getUrl()['attribute'])) ? $this->getUrl()['attribute'] : 'id';
-            $url = action($this->getUrl()['url'], $model->{$attribute});
+            // Evaluate fields
+            $url = $this->getUrl();
 
-            return $url;
+            $hasModelAttribute = true;
+            $attributes = [];
+
+            // Has model attribute
+            if(isset($url['has_model_attribute'])) {
+                $hasModelAttribute = $url['has_model_attribute'];
+            }
+
+            if($hasModelAttribute) {
+                $modelAttribute = (isset($url['model_attribute'])) ? $url['model_attribute'] : 'id';
+                $attributes[] = $model->{$modelAttribute};
+            }
+
+            // Has other attributes
+            if(isset($url['attributes'])) {
+                $attributes = array_merge($attributes, $url['attributes']);
+            }
+
+            return action($url['url'], $attributes);
         }
 
+        // If not, return the URL as string
         return $this->getUrl();
     }
 
