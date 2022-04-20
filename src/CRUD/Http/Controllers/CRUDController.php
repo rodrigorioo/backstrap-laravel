@@ -55,7 +55,7 @@ abstract class CRUDController extends Controller
      */
     protected array $validations = [];
 
-    public function __construct () {
+    final public function __construct () {
 
         // Model
         $this->modelCrud = new Model($this->model);
@@ -76,34 +76,8 @@ abstract class CRUDController extends Controller
         $this->setRouteParameters();
     }
 
-    private function setRouteParameters () {
+    final private function setRouteParameters () {
         $this->route = new \Rodrigorioo\BackStrapLaravel\CRUD\Classes\Route();
-    }
-
-    private function getUrl ($action, $id = null) {
-
-        $url = '';
-        $controller = explode('@', $this->route->getCurrentRouteAction()['controller'])[0];
-
-        switch($action) {
-
-            case 'index':
-            case 'create':
-            case 'store':
-
-                $url = action($controller.'@'.$action, array_values($this->route->getParameters()));
-                break;
-
-            case 'show':
-            case 'edit':
-            case 'update':
-            case 'destroy':
-
-                $url = action($controller.'@'.$action, array_merge(array_values($this->route->getParameters()), [$id]));
-                break;
-        }
-
-        return $url;
     }
 
     final private function viewData () {
@@ -302,13 +276,13 @@ abstract class CRUDController extends Controller
 
                         case 'edit_button':
                             $this->editButton($buttonName, [
-                                'link' => $this->getUrl('edit', $element->id)
+                                'link' => $this->route->getUrl('edit', $element->id)
                             ]);
                             break;
 
                         case 'delete_button':
                             $this->editButton($buttonName, [
-                                'link' => $this->getUrl('destroy', $element->id)
+                                'link' => $this->route->getUrl('destroy', $element->id)
                             ]);
 
                             break;
@@ -339,8 +313,8 @@ abstract class CRUDController extends Controller
         return view('backstrap_laravel::admin.crud.index')->with(
             array_merge($this->viewData(), [
                 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
-                'urlCreate' => $this->getUrl('create'),
-                'urlIndex' => $this->getUrl('index'),
+                'urlCreate' => $this->route->getUrl('create'),
+                'urlIndex' => $this->route->getUrl('index'),
                 'columnsTable' => $columnsTable,
                 'columns' => $columns,
             ]),
@@ -360,8 +334,8 @@ abstract class CRUDController extends Controller
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
                 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
-                'urlStore' => $this->getUrl('store'),
-                'urlIndex' => $this->getUrl('index'),
+                'urlStore' => $this->route->getUrl('store'),
+                'urlIndex' => $this->route->getUrl('index'),
                 'cards' => $this->getCards(),
                 'fields' => $this->getFields(),
 
@@ -396,7 +370,7 @@ abstract class CRUDController extends Controller
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
+            return Redirect::to($this->route->getUrl('index'))->withAlert(array_merge($alertSuccess, [
                 'title' => __('backstrap_laravel::alerts.success.title'),
                 'text' => __('backstrap_laravel::alerts.success.text'),
                 'close' => __('backstrap_laravel::alerts.success.close'),
@@ -404,7 +378,7 @@ abstract class CRUDController extends Controller
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertError, [
+        return Redirect::to($this->route->getUrl('index'))->withAlert(array_merge($alertError, [
             'title' => __('backstrap_laravel::alerts.error.title'),
             'text' => __('backstrap_laravel::alerts.error.text'),
             'close' => __('backstrap_laravel::alerts.error.close'),
@@ -440,8 +414,8 @@ abstract class CRUDController extends Controller
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
                 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
-                'urlUpdate' => $this->getUrl('update', $id),
-                'urlIndex' => $this->getUrl('index'),
+                'urlUpdate' => $this->route->getUrl('update', $id),
+                'urlIndex' => $this->route->getUrl('index'),
                 'cards' => $this->getCards(),
                 'fields' => $this->getFields(),
                 'model' => $model,
@@ -478,7 +452,7 @@ abstract class CRUDController extends Controller
 
         if ($model->save()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
+            return Redirect::to($this->route->getUrl('index'))->withAlert(array_merge($alertSuccess, [
                 'title' => __('backstrap_laravel::alerts.success.title'),
                 'text' => __('backstrap_laravel::alerts.success.text'),
                 'close' => __('backstrap_laravel::alerts.success.close'),
@@ -486,7 +460,7 @@ abstract class CRUDController extends Controller
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertError, [
+        return Redirect::to($this->route->getUrl('index'))->withAlert(array_merge($alertError, [
             'title' => __('backstrap_laravel::alerts.error.title'),
             'text' => __('backstrap_laravel::alerts.error.text'),
             'close' => __('backstrap_laravel::alerts.error.close'),
@@ -506,7 +480,7 @@ abstract class CRUDController extends Controller
 
         if ($model->delete()) {
             $alertSuccess = config('backstrap_laravel.alert_success');
-            return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertSuccess, [
+            return Redirect::to($this->route->getUrl('index'))->withAlert(array_merge($alertSuccess, [
                 'title' => __('backstrap_laravel::alerts.success.title'),
                 'text' => __('backstrap_laravel::alerts.success.text'),
                 'close' => __('backstrap_laravel::alerts.success.close'),
@@ -514,7 +488,7 @@ abstract class CRUDController extends Controller
         }
 
         $alertError = config('backstrap_laravel.alert_error');
-        return Redirect::to($this->getUrl('index'))->withAlert(array_merge($alertError, [
+        return Redirect::to($this->route->getUrl('index'))->withAlert(array_merge($alertError, [
             'title' => __('backstrap_laravel::alerts.error.title'),
             'text' => __('backstrap_laravel::alerts.error.text'),
             'close' => __('backstrap_laravel::alerts.error.close'),

@@ -18,6 +18,32 @@ class Route {
         $this->queryParameters = $queryParameters->all();
     }
 
+    public function getUrl ($action, $id = null) {
+
+        $url = '';
+        $controller = explode('@', $this->getCurrentRouteAction()['controller'])[0];
+
+        switch($action) {
+
+            case 'index':
+            case 'create':
+            case 'store':
+
+                $url = action($controller.'@'.$action, array_values($this->getParameters()));
+                break;
+
+            case 'show':
+            case 'edit':
+            case 'update':
+            case 'destroy':
+
+                $url = action($controller.'@'.$action, array_merge(array_values($this->getParameters()), [$id]));
+                break;
+        }
+
+        return $url;
+    }
+
     /**
      * @return \Illuminate\Routing\Route|null
      */
