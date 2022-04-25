@@ -5,7 +5,7 @@ namespace Rodrigorioo\BackStrapLaravel\CRUD\Classes\Fields;
 use Collective\Html\FormFacade;
 use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Field;
 
-class URL extends Field {
+class Url extends Field {
 
     public function render ($errors, $model = null) {
 
