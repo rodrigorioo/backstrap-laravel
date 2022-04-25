@@ -151,7 +151,7 @@ abstract class CRUDController extends Controller
         $currentParameters = [];
         if(count($parameters) > 0 && $this->isNested) {
 
-            $actualModelName = $controllerCurrentRoute->modelName;
+            $actualModelName = $controllerCurrentRoute->modelCrud->getModelName();
 
             foreach($parameters as $nameParameter => $valueParameter) {
 
