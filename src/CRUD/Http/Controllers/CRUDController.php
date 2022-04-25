@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Breadcrumb;
 use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Language;
 use Rodrigorioo\BackStrapLaravel\CRUD\Classes\Model;
 use Rodrigorioo\BackStrapLaravel\CRUD\Traits\Buttons;
@@ -127,7 +128,7 @@ abstract class CRUDController extends Controller
         return $model;
     }
 
-    final private function generateParentBreadcrumbs () : array
+    /* final private function generateParentBreadcrumbs () : array
     {
         // Vars
         $breadcrumbs = [];
@@ -151,7 +152,7 @@ abstract class CRUDController extends Controller
         $currentParameters = [];
         if(count($parameters) > 0 && $this->isNested) {
 
-            $actualModelName = $controllerCurrentRoute->modelName;
+            $actualModelName = $controllerCurrentRoute->modelCrud->getModelName();
 
             foreach($parameters as $nameParameter => $valueParameter) {
 
@@ -164,7 +165,7 @@ abstract class CRUDController extends Controller
 
                 // Add parameter to array
                 $currentParameters[$nameParameter] = $valueParameter;
-                
+
                 // Merge all current route parameters for get the route name
                 $fullRouteName = '';
                 foreach($currentParameters as $nameCurrentParameter => $valueCurrentParameter) {
@@ -223,7 +224,7 @@ abstract class CRUDController extends Controller
         }
 
         return $breadcrumbs;
-    }
+    } */
 
     /**
      * Display a listing of the resource.
@@ -312,7 +313,8 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.index')->with(
             array_merge($this->viewData(), [
-                'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
+                // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
+                'parentBreadcrumbs' => Breadcrumb::generate($this->route),
                 'urlCreate' => $this->route->getUrl('create'),
                 'urlIndex' => $this->route->getUrl('index'),
                 'columnsTable' => $columnsTable,
@@ -333,7 +335,8 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
-                'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
+                // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
+                'parentBreadcrumbs' => Breadcrumb::generate($this->route),
                 'urlStore' => $this->route->getUrl('store'),
                 'urlIndex' => $this->route->getUrl('index'),
                 'cards' => $this->getCards(),
@@ -413,7 +416,8 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
-                'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
+                // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
+                'parentBreadcrumbs' => Breadcrumb::generate($this->route),
                 'urlUpdate' => $this->route->getUrl('update', $id),
                 'urlIndex' => $this->route->getUrl('index'),
                 'cards' => $this->getCards(),
