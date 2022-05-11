@@ -15,7 +15,7 @@ class Breadcrumb {
 
     }
 
-    public static function generate ($route) {
+    public static function generate (Route $route, Model $model) {
 
         // Var to return
         $breadcrumbs = [];
@@ -28,82 +28,31 @@ class Breadcrumb {
         $fullRouteName = '';
         $fullRouteParameters = [];
 
-        for($i = 0; $i < count($nameOfParameters); $i++) {
+        // If have one or more parameters
+        if(count($nameOfParameters) > 0) {
 
-            // Get name and value of parameter
-            $nameOfParameter = $nameOfParameters[$i];
-            $valueParameter = $parameters[$nameOfParameter];
+            for($i = 0; $i < count($nameOfParameters); $i++) {
 
-            // Parse name of parameters
-            $nameOfParameterPlural = Str::plural($nameOfParameter);
-            $nameOfParameterUpper = Str::ucfirst(Str::camel(Str::replace('_', ' ', $nameOfParameter)));
-            $nameOfParameterUpperPlural = Str::plural($nameOfParameterUpper);
+                // Get name and value of parameter
+                $nameOfParameter = $nameOfParameters[$i];
+                $valueParameter = $parameters[$nameOfParameter];
 
-            // Complete full routes
-            $fullRouteName .= ($fullRouteName != "") ? "." : "";
-            $fullRouteName .= Str::replace('_', '-', $nameOfParameterPlural);
+                // Parse name of parameters
+                $nameOfParameterPlural = Str::plural($nameOfParameter);
+                $nameOfParameterUpper = Str::ucfirst(Str::camel(Str::replace('_', ' ', $nameOfParameter)));
+                $nameOfParameterUpperPlural = Str::plural($nameOfParameterUpper);
 
-            // Actual parameter
-            if(count($nameOfParameters) - 1 == $i) {
+                // Complete full routes
+                $fullRouteName .= ($fullRouteName != "") ? "." : "";
+                $fullRouteName .= Str::replace('_', '-', $nameOfParameterPlural);
 
-                // Get current action and evaluate it
-                $explodeAsActionCurrentRoute = explode('.', $route->getCurrentRoute()->action['as']);
-                $currentAction = $explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1];
+                // If it's the last attribute
+                if($i == count($nameOfParameters) - 1) {
 
-                switch($currentAction) {
+                } else {
 
-                    case 'create':
-                    case 'edit':
-
-                        $urlIndex = action(get_class($controllerCurrentRoute).'@index', $currentParameters);
-
-                        $breadcrumbActual = '';
-                        if($explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1] == 'create') {
-                            $breadcrumbActual = __('backstrap_laravel::crud.create.breadcrumb_title');
-                        } else { // If it's edit
-                            $breadcrumbActual = __('backstrap_laravel::crud.edit.breadcrumb_title');
-                        }
-
-                        array_push($breadcrumbs, [
-                            'text' => __('backstrap_laravel::crud.create.list_of').$modelNamePlural,
-                            'url' => $urlIndex,
-                        ], [
-                            'text' => $breadcrumbActual,
-                        ]);
-
-                        break;
-
-                    case 'index':
-
-                        dd("lol");
-
-                        $breadcrumbs[] = [
-                            'text' => __('backstrap_laravel::crud.index.list_of') . $modelNamePlural,
-                        ];
-
-                        break;
                 }
-
-                // Make URLS
-                $urlIndex = action(RouteFacade::getRoutes()->getByName($fullRouteName.'.index')->action['controller'], array_values($fullRouteParameters));
-                $urlEdit = action(RouteFacade::getRoutes()->getByName($fullRouteName.'.edit')->action['controller'], array_merge(array_values($fullRouteParameters), [$valueParameter]));
-
-                // Add actual parameter
-                $fullRouteParameters[] = $valueParameter;
-
-                $breadcrumbs[] = [
-                    'text' => __('backstrap_laravel::crud.create.list_of') . $nameOfParameterUpperPlural,
-                    'url' => $urlIndex,
-                ];
-
-                $breadcrumbs[] = [
-                    'text' => __('backstrap_laravel::crud.edit.breadcrumb_title'),
-                    'url' => $urlEdit,
-                ];
-
-
-            } else { // If it's not, it's a nest attribute
-
+                
                 // Make URLS
                 $urlIndex = action(RouteFacade::getRoutes()->getByName($fullRouteName.'.index')->action['controller'], array_values($fullRouteParameters));
                 $urlEdit = action(RouteFacade::getRoutes()->getByName($fullRouteName.'.edit')->action['controller'], array_merge(array_values($fullRouteParameters), [$valueParameter]));
@@ -122,11 +71,59 @@ class Breadcrumb {
                 ];
 
                 // TODO:
-
             }
-        }
 
-        // TODO:
+        } else {
+
+            // Get current action
+            $explodeAsActionCurrentRoute = explode('.', $route->getCurrentRoute()->action['as']);
+            $currentAction = $explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1];
+
+            // Add actual parameter
+            switch($currentAction) {
+
+                case 'create':
+                case 'edit':
+
+                    // Get last parameter
+//                $nameLastParameter = $nameOfParameters[count($nameOfParameters) - 1];
+//
+//                // Parse name of parameters
+//                $nameOfParameterPlural = Str::plural($nameLastParameter);
+//                $nameOfParameterUpper = Str::ucfirst(Str::camel(Str::replace('_', ' ', $nameLastParameter)));
+//                $nameOfParameterUpperPlural = Str::plural($nameOfParameterUpper);
+//
+//                // Make URLS
+//                $urlIndex = action(RouteFacade::getRoutes()->getByName($fullRouteName.'.index')->action['controller'], array_values($fullRouteParameters));
+//
+//                // Make actual breadcrumb
+//                $breadcrumbActual = '';
+//                if($explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1] == 'create') {
+//                    $breadcrumbActual = __('backstrap_laravel::crud.create.breadcrumb_title');
+//                } else { // If it's edit
+//                    $breadcrumbActual = __('backstrap_laravel::crud.edit.breadcrumb_title');
+//                }
+//
+//                array_push($breadcrumbs, [
+//                    'text' => __('backstrap_laravel::crud.create.list_of').$nameOfParameterPlural,
+//                    'url' => $urlIndex,
+//                ], [
+//                    'text' => $breadcrumbActual,
+//                ]);
+
+                    break;
+
+                case 'index':
+
+
+                    $breadcrumbs[] = [
+                        'text' => __('backstrap_laravel::crud.index.list_of') . $model->getModelNamePlural(),
+                    ];
+
+                    break;
+            }
+
+        }
 
         return $breadcrumbs;
 

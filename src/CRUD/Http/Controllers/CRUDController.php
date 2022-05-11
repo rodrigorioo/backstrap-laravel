@@ -314,7 +314,7 @@ abstract class CRUDController extends Controller
         return view('backstrap_laravel::admin.crud.index')->with(
             array_merge($this->viewData(), [
                 // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
-                'parentBreadcrumbs' => Breadcrumb::generate($this->route),
+                'parentBreadcrumbs' => Breadcrumb::generate($this->route, $this->modelCrud),
                 'urlCreate' => $this->route->getUrl('create'),
                 'urlIndex' => $this->route->getUrl('index'),
                 'columnsTable' => $columnsTable,
@@ -336,7 +336,7 @@ abstract class CRUDController extends Controller
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
                 // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
-                'parentBreadcrumbs' => Breadcrumb::generate($this->route),
+                'parentBreadcrumbs' => Breadcrumb::generate($this->route, $this->modelCrud),
                 'urlStore' => $this->route->getUrl('store'),
                 'urlIndex' => $this->route->getUrl('index'),
                 'cards' => $this->getCards(),
@@ -417,7 +417,7 @@ abstract class CRUDController extends Controller
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
                 // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
-                'parentBreadcrumbs' => Breadcrumb::generate($this->route),
+                'parentBreadcrumbs' => Breadcrumb::generate($this->route, $this->modelCrud),
                 'urlUpdate' => $this->route->getUrl('update', $id),
                 'urlIndex' => $this->route->getUrl('index'),
                 'cards' => $this->getCards(),
