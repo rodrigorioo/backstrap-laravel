@@ -77,7 +77,16 @@ class Button {
 
             // Has other attributes
             if(isset($url['attributes'])) {
-                $attributes = array_merge($attributes, $url['attributes']);
+
+                foreach($url['attributes'] as $nameAttribute => $valueAttribute) {
+
+                    // If var is function, we call it with the model and set the value
+                    if(is_callable($valueAttribute)) {
+                        $valueAttribute = $valueAttribute($model);
+                    }
+
+                    $attributes[$nameAttribute] = $valueAttribute;
+                }
             }
 
             return action($url['url'], $attributes);
