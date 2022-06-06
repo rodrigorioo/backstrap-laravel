@@ -128,104 +128,6 @@ abstract class CRUDController extends Controller
         return $model;
     }
 
-    /* final private function generateParentBreadcrumbs () : array
-    {
-        // Vars
-        $breadcrumbs = [];
-        $urls = [];
-
-        // Add current route to urls
-        $currentRoute = $this->route->getCurrentRoute();
-        $actionCurrentRoute = $currentRoute->action;
-        $controllerCurrentRoute = $currentRoute->controller;
-        $modelNamePlural = $controllerCurrentRoute->modelCrud->getModelNamePlural();
-        $asActionCurrentRoute = $actionCurrentRoute['as'];
-
-        // Add current url to array
-        array_unshift($urls, $asActionCurrentRoute);
-
-        // Explode 'as' name
-        $explodeAsActionCurrentRoute = explode('.', $asActionCurrentRoute);
-
-        // Parameters
-        $parameters = $this->route->getParameters();
-        $currentParameters = [];
-        if(count($parameters) > 0 && $this->isNested) {
-
-            $actualModelName = $controllerCurrentRoute->modelCrud->getModelName();
-
-            foreach($parameters as $nameParameter => $valueParameter) {
-
-                $modelUpperName = str_replace(' ', '', ucwords(str_replace('_', ' ', $nameParameter)));
-                $pluralNameUpper = ltrim(preg_replace('/[A-Z]/', ' $0', $modelUpperName)).'s';
-                $pluralNameLower = ltrim(preg_replace('/[A-Z]/', ' $0', $nameParameter)).'s';
-                $modelName = '\App\Models\\'.$modelUpperName;
-
-                if($modelUpperName == $actualModelName) continue;
-
-                // Add parameter to array
-                $currentParameters[$nameParameter] = $valueParameter;
-
-                // Merge all current route parameters for get the route name
-                $fullRouteName = '';
-                foreach($currentParameters as $nameCurrentParameter => $valueCurrentParameter) {
-                    $fullRouteName .= ($fullRouteName != '') ? '.' : '';
-                    $fullRouteName .= str_replace('_', '-', $nameCurrentParameter).'s';
-                }
-
-                $model = $modelName::findOrFail($valueParameter);
-
-                $urlIndex = action(Route::getRoutes()->getByName($fullRouteName.'.index')->action['controller'], array_values($currentParameters));
-                $urlEdit = action(Route::getRoutes()->getByName($fullRouteName.'.edit')->action['controller'], array_merge(array_values($currentParameters)));
-
-                $breadcrumbs[] = [
-                    'text' => __('backstrap_laravel::crud.create.list_of') . $pluralNameUpper,
-                    'url' => $urlIndex,
-                ];
-
-                $breadcrumbs[] = [
-                    'text' => __('backstrap_laravel::crud.edit.breadcrumb_title'),
-                    'url' => $urlEdit,
-                ];
-            }
-        }
-
-        // Add actual URL
-        switch($explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1]) {
-
-            case 'create':
-            case 'edit':
-
-                $urlIndex = action(get_class($controllerCurrentRoute).'@index', $currentParameters);
-
-                $breadcrumbActual = '';
-                if($explodeAsActionCurrentRoute[count($explodeAsActionCurrentRoute) - 1] == 'create') {
-                    $breadcrumbActual = __('backstrap_laravel::crud.create.breadcrumb_title');
-                } else { // If it's edit
-                    $breadcrumbActual = __('backstrap_laravel::crud.edit.breadcrumb_title');
-                }
-
-                array_push($breadcrumbs, [
-                    'text' => __('backstrap_laravel::crud.create.list_of').$modelNamePlural,
-                    'url' => $urlIndex,
-                ], [
-                        'text' => $breadcrumbActual,
-                    ]);
-
-                break;
-
-            case 'index':
-
-                $breadcrumbs[] = [
-                    'text' => __('backstrap_laravel::crud.index.list_of') . $modelNamePlural,
-                ];
-
-                break;
-        }
-
-        return $breadcrumbs;
-    } */
-
     /**
      * Display a listing of the resource.
      *
@@ -313,7 +215,6 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.index')->with(
             array_merge($this->viewData(), [
-                // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
                 'parentBreadcrumbs' => Breadcrumb::generate($this->route, $this->modelCrud),
                 'urlCreate' => $this->route->getUrl('create'),
                 'urlIndex' => $this->route->getUrl('index'),
@@ -335,7 +236,6 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.create')->with(
             array_merge($this->viewData(), [
-                // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
                 'parentBreadcrumbs' => Breadcrumb::generate($this->route, $this->modelCrud),
                 'urlStore' => $this->route->getUrl('store'),
                 'urlIndex' => $this->route->getUrl('index'),
@@ -416,7 +316,6 @@ abstract class CRUDController extends Controller
 
         return view('backstrap_laravel::admin.crud.edit')->with(
             array_merge($this->viewData(), [
-                // 'parentBreadcrumbs' => $this->generateParentBreadcrumbs(),
                 'parentBreadcrumbs' => Breadcrumb::generate($this->route, $this->modelCrud),
                 'urlUpdate' => $this->route->getUrl('update', $id),
                 'urlIndex' => $this->route->getUrl('index'),
